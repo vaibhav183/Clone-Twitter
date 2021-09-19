@@ -11,4 +11,4 @@ app.get('/',(req,res)=>{
 
 app.listen(3000,function(){
     console.log("server reached at 3000");
-})
+});
