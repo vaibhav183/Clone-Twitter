@@ -1,1 +1,1 @@
-hhttps://twitter-clone-by-vaibhav.herokuapp.com/
+https://twitter-clone-by-vaibhav.herokuapp.com/
