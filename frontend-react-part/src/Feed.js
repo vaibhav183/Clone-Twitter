@@ -6,7 +6,11 @@ import Button from '@mui/material/Button';
 import Post from "./Post"
 
 function Feed() {
-    const [posts, setPosts] = useState([]);
+    const [posts, setPosts] = useState({
+        id:"",
+        name:"",
+        text:""
+    });
 
 
   // async function getposts(db) {
@@ -15,6 +19,15 @@ function Feed() {
   //   const cityList = citySnapshot.docs.map(doc => doc.data());
   //   return cityList;
   // }
+   const textchange=(e)=>{
+       setPosts(text=e.target.value)
+   }
+
+   const submission=(e)=>{
+       e.preventDefault();
+       Axios.post("")
+   }
+
     return (
         <div className="feed">
             <div className="feed_header">
@@ -25,8 +38,8 @@ function Feed() {
                 <Avatar alt="Vaibhav Sharp" src={Vaibhav} />
                 <textarea placeholder="What's happening in college...."/>
                 </div>
-                <input className="input_url" placeholder="Enter url of image" type="text"/>
-                <Button variant="outlined">Tweet</Button>
+                <input className="input_url" placeholder="Enter url of image" type="text" value={posts.text} onChange={textchange} />
+                <Button variant="outlined" onSubmit={submission}>Tweet</Button>
             </form>
             {/* {posts.map((post) => (
             <Post 
