@@ -24,14 +24,16 @@ function Feed() {
   //   return cityList;
   // }
    const textchange=(e)=>{
-       setPosts({text:(e.target.value)})
+       setPosts({ ...posts, text:(e.target.value)})
+       console.log(posts.text)
    }
 
    const submission=async(e)=>{
        e.preventDefault();
        const store={name:"Babita", username:posts.username, email:posts.email, post_data:posts.post_data, verified:posts.verified, text:posts.text}
        console.log("hello")
-       await Axios.post("https://twitter-clone-by-vaibhav.herokuapp.com/insert",store);
+       await Axios.post("/insert",store)
+       .then(console.log("Data sent"));
    }
 
     return (
@@ -39,13 +41,13 @@ function Feed() {
             <div className="feed_header">
                 <h2>Home</h2>
             </div>
-            <form className="form" onClick={submission}>
+            <form className="form" method="POST">
                 <div className="input_box">
                 <Avatar alt="Vaibhav Sharp" src={Vaibhav} />
                 <textarea placeholder="What's happening in college...." value={posts.text} onChange={textchange}  />
                 </div>
                 <input className="input_url" placeholder="Enter url of image" type="text"/>
-                <Button variant="outlined" >Tweet</Button>
+                <Button variant="outlined" onClick={submission}>Tweet</Button>
             </form>
             {/* {posts.map((post) => (
             <Post 
