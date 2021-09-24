@@ -59,7 +59,7 @@ app.post('/insert', (req, res) => {
         text: req.body.text
     })
     post1.save(function(err) {
-        if (err) return console.log("err");
+        if (err) return console.log("error");
         else return console.log("Data posted successfully");
     })
 })
