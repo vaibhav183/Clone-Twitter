@@ -2,7 +2,7 @@
     "name": "frontend-react-part",
     "version": "0.1.0",
     "private": true,
-    "proxy": "https://twitter-clone-by-vaibhav.herokuapp.com",
+    "proxy": "https://clone-twitter-by-vaibhav.herokuapp.com",
     "dependencies": {
         "@emotion/react": "^11.4.1",
         "@emotion/styled": "^11.3.0",

@@ -12,27 +12,17 @@ function Feed() {
         username:"Babita@183",
         email:"bp789792@gmail.com",
         post_data:"hello Babita",
-        verified:false,
+        verified:true,
         text:""
     });
-
-
-  // async function getposts(db) {
-  //   const citiesCol = ;
-  //   const citySnapshot = await getDocs(citiesCol);
-  //   const cityList = citySnapshot.docs.map(doc => doc.data());
-  //   return cityList;
-  // }
    const textchange=(e)=>{
        setPosts({ ...posts, text:(e.target.value)})
-       console.log(posts.text)
    }
 
    const submission=async(e)=>{
        e.preventDefault();
-       const store={name:"Babita", username:posts.username, email:posts.email, post_data:posts.post_data, verified:posts.verified, text:posts.text}
-       console.log("hello")
-       await Axios.post("/insert",store)
+       const store={name:posts.name, username:posts.username, email:posts.email, post_data:posts.post_data, verified:posts.verified, text:posts.text}
+       await Axios.post("/insert",store)  // change proxy(in package.json) to backend server.
        .then(console.log("Data sent"));
    }
 
