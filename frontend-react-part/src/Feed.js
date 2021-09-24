@@ -3,12 +3,16 @@ import "./feed.css"
 import Avatar from '@mui/material/Avatar';
 import Vaibhav from "./public/link4.jpg"
 import Button from '@mui/material/Button';
+import Axios from 'axios'
 import Post from "./Post"
 
 function Feed() {
     const [posts, setPosts] = useState({
-        id:"",
-        name:"",
+        name:"Babita Pandey",
+        username:"Babita@183",
+        email:"bp789792@gmail.com",
+        post_data:"hello Babita",
+        verified:false,
         text:""
     });
 
@@ -20,12 +24,14 @@ function Feed() {
   //   return cityList;
   // }
    const textchange=(e)=>{
-       setPosts(text=e.target.value)
+       setPosts({text:(e.target.value)})
    }
 
-   const submission=(e)=>{
+   const submission=async(e)=>{
        e.preventDefault();
-       Axios.post("")
+       const store={name:"Babita", username:posts.username, email:posts.email, post_data:posts.post_data, verified:posts.verified, text:posts.text}
+       console.log("hello")
+       await Axios.post("https://twitter-clone-by-vaibhav.herokuapp.com/insert",store);
    }
 
     return (
@@ -33,13 +39,13 @@ function Feed() {
             <div className="feed_header">
                 <h2>Home</h2>
             </div>
-            <form className="form">
+            <form className="form" onClick={submission}>
                 <div className="input_box">
                 <Avatar alt="Vaibhav Sharp" src={Vaibhav} />
-                <textarea placeholder="What's happening in college...."/>
+                <textarea placeholder="What's happening in college...." value={posts.text} onChange={textchange}  />
                 </div>
-                <input className="input_url" placeholder="Enter url of image" type="text" value={posts.text} onChange={textchange} />
-                <Button variant="outlined" onSubmit={submission}>Tweet</Button>
+                <input className="input_url" placeholder="Enter url of image" type="text"/>
+                <Button variant="outlined" >Tweet</Button>
             </form>
             {/* {posts.map((post) => (
             <Post 
