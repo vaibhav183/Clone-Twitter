@@ -45,7 +45,7 @@ db.once('open', function() {
         post_data: {
             type: String
         },
-        post_path: {
+        post_url: {
             type: String
         },
         verified: {
@@ -79,7 +79,7 @@ var flag_path=""
 app.post('/insert', (req, res) => {
 console.log("insert data................................")
      // file upload
-     var uploadPath;
+     /*var uploadPath;
      var sampleFile;
     if (!req.files || Object.keys(req.files).length === 0) {
         return res.status(400).send('No files were uploaded.');
@@ -95,25 +95,25 @@ console.log("insert data................................")
            console.log(date.getMilliseconds())
         }
       });
-      }
+      }*/
       // data upload into database
       const post1 = new Posts({
                   name: req.body.name,
                   username: req.body.username,
                   email: req.body.email,
-                  post_data:sampleFile.name,
-                  post_path:'/Public/' + sampleFile.name,
+                  post_data:req.body.post_data,
+                  post_url:req.body.post_url,
                   verified: req.body.verified,
                   text: req.body.text
               })
-              post1.save(function(err) {
-                  if (err){
-                      return console.log("error");
-                  }
-                  else {
-                      return console.log("Data posted successfully",flag_path,date.getMilliseconds());
-                  }
-              })
+      post1.save(function(err) {
+          if (err){
+              return console.log("error");
+          }
+          else {
+              return console.log("Data posted successfully",date.getMilliseconds());
+          }
+      })
 })
 
 
