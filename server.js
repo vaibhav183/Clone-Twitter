@@ -74,11 +74,7 @@ app.get('/fetch',(req,res)=>{
         }
     })
 })
-var flag_data=""
-var flag_path=""
-app.post('/insert', (req, res) => {
-console.log("insert data................................")
-     // file upload
+// file upload
      /*var uploadPath;
      var sampleFile;
     if (!req.files || Object.keys(req.files).length === 0) {
@@ -96,6 +92,9 @@ console.log("insert data................................")
         }
       });
       }*/
+app.post('/insert', (req, res) => {
+console.log("insert data................................")
+
       // data upload into database
       const post1 = new Posts({
                   name: req.body.name,
@@ -105,10 +104,10 @@ console.log("insert data................................")
                   post_url:req.body.post_url,
                   verified: req.body.verified,
                   text: req.body.text
-              })
+      })
       post1.save(function(err) {
           if (err){
-              return console.log("error");
+              return console.log(err);
           }
           else {
               return console.log("Data posted successfully",date.getMilliseconds());
