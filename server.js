@@ -1,8 +1,22 @@
 require('dotenv').config();
+const fs=require('fs')
 const express = require('express');
 const app = express();
+var bodyParser = require('body-parser');
 const mongoose = require('mongoose');
+const fileUpload = require('express-fileupload'); // file upload
+app.use(fileUpload());
 const cors = require('cors') // It is used to connection between two servers
+app.use(bodyParser.urlencoded({ extended: false }))
+app.use(express.static("Public"))
+app.use(bodyParser.json())
+const path=require('path')
+/*app.use('/fetch1', express.static(path.join(__dirname, '/Public')));*/
+app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+  next();
+});
 app.use(express.json());
 app.use(cors());
 const url = "mongodb+srv://vaibhav183:Mongodb_vibhu1@cluster0.zksak.mongodb.net/twitter_clone";
@@ -29,40 +43,80 @@ db.once('open', function() {
             required: true
         },
         post_data: {
-            type: String,
-            required: true
+            type: String
+        },
+        post_path: {
+            type: String
         },
         verified: {
             type: Boolean,
-            required: true
         },
         text: {
             type: String,
-            required: true
         }
     })
     Posts = mongoose.model('posts', post_schema);
 })
 
+
 app.get("/", function(req, res) {
     // res.send("Hello")\
     res.sendFile(__dirname+"/index.html")
 })
-
-app.post('/insert', (req, res) => {
-    const post1 = new Posts({
-        name: req.body.name,
-        username: req.body.username,
-        email: req.body.email,
-        post_data: req.body.post_data,
-        verified: req.body.verified,
-        text: req.body.text
-    })
-    post1.save(function(err) {
-        if (err) return console.log("error");
-        else return console.log("Data posted successfully");
+let date=new Date()
+app.get('/fetch',(req,res)=>{
+    console.log("fetched from database")
+    Posts.find({},function(err, result){
+        if(err) {
+            res.send(err)
+        }else {
+            res.send(result) ;
+        }
     })
 })
+var flag_data=""
+var flag_path=""
+app.post('/insert', (req, res) => {
+console.log("insert data................................")
+     // file upload
+     var uploadPath;
+     var sampleFile;
+    if (!req.files || Object.keys(req.files).length === 0) {
+        return res.status(400).send('No files were uploaded.');
+    }
+    else{
+    console.log(req.files)
+    sampleFile = req.files.myFile   // myfile is name of same data which is send by formData
+    uploadPath=__dirname + '/Public/' + sampleFile.name;
+    sampleFile.mv(uploadPath, function(err) { //mv for move to 'Public' folder
+        if (err){
+           console.log(date.getMilliseconds())
+        }else{
+           console.log(date.getMilliseconds())
+        }
+      });
+      }
+      // data upload into database
+      const post1 = new Posts({
+                  name: req.body.name,
+                  username: req.body.username,
+                  email: req.body.email,
+                  post_data:sampleFile.name,
+                  post_path:'/Public/' + sampleFile.name,
+                  verified: req.body.verified,
+                  text: req.body.text
+              })
+              post1.save(function(err) {
+                  if (err){
+                      return console.log("error");
+                  }
+                  else {
+                      return console.log("Data posted successfully",flag_path,date.getMilliseconds());
+                  }
+              })
+})
+
+
 
 app.listen(process.env.PORT || 3001, function() {
     console.log("Server reached at port 3001")
