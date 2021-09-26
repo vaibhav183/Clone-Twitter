@@ -107,10 +107,10 @@ console.log("insert data................................")
       })
       post1.save(function(err) {
           if (err){
-              return console.log(err);
+              res.send(err)
           }
           else {
-              return console.log("Data posted successfully",date.getMilliseconds());
+              res.send("success")
           }
       })
 })
