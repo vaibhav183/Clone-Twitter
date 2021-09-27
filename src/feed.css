@@ -1,7 +1,7 @@
 .feed {
     border-right: 2px solid var(--twitter-background);
     /* min-width: fit-content; */
-    flex: 0.4;
+    width: 50%;
     overflow-y: scroll;
     /* When overflow happens then only scroll up applid*/
 }
@@ -50,6 +50,8 @@ textarea {
     margin-left: 1em;
     border: none;
     overflow-y: scroll;
+    font-family: 'Bonheur Royale', cursive;
+    font-weight: 400;
 }
 
 
@@ -73,8 +75,9 @@ textarea:focus {
     outline: none;
 }
 
-Button {
-    width: 10em;
+.submit {
+    width: 30%;
+    height: 3em !important;
     margin-bottom: 1px !important;
     background-color: var(--twitter-tweet) !important;
     outline: none !important;
@@ -85,11 +88,37 @@ Button {
     /* margin-right: auto; */
 }
 
+.posting_data {
+    display: flex;
+    align-items: center;
+}
+
+.upload {
+    border-radius: 4em;
+    font-weight: 600 !important;
+    outline: none !important;
+    margin-left: auto !important;
+}
+
 .input_url {
     border: none;
+    width: 60%;
     padding: 0.7em;
 }
 
 .input_url:focus {
     outline: none;
+}
+
+.submit_button {
+    display: flex;
+    align-items: center;
+}
+
+.Error_sign {
+    color: red;
+    font-family: 'Koh Santepheap', cursive;
+    font-weight: 600;
+    width: 50%;
+    text-align: center;
 }

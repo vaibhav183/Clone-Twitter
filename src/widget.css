@@ -1,5 +1,5 @@
 .widget {
-    flex: 0.3;
+    width: 30%;
 }
 
 .widgets__input {

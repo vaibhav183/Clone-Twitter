@@ -7,7 +7,7 @@ import FavoriteBorderIcon from '@mui/icons-material/FavoriteBorder';
 import PublishIcon from '@mui/icons-material/Publish';
 import "./Post.css"
 
-function Post({display_pic,Name,Username,verified,text,post_data}) {
+function Post({display_pic,Name,Username,verified,text,post_data,post_url}) {
     return (
         <div className="post">
                 <div className="post_header">
@@ -25,7 +25,9 @@ function Post({display_pic,Name,Username,verified,text,post_data}) {
                     
                 </div>
                 <p>{text}</p>
-                <img className="post_data" src={post_data}/>
+                {post_data && <img className="post_data" src={post_data} alt=""/>}
+                {post_data && <br/>}
+                {post_url && <img className="post_data" src={post_url} alt=""/>}
                 <div id="footer">
                 <ChatBubbleOutlineIcon fontSize="small"/>
                 <RepeatIcon fontSize="Small"/>
