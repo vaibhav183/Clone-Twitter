@@ -28,7 +28,7 @@ function Feed() {
    useEffect(()=>{
        Axios.get("https://clone-twitter-by-vaibhav.herokuapp.com/fetch")  
        .then((data)=>{
-            setDbdata(data.data)
+            setDbdata((data.data).reverse())
        })
        .catch(()=>{
            console.log("Error, Can't fetch from database")
