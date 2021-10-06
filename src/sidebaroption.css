@@ -18,9 +18,17 @@
     padding: 0.7em;
 }
 
-.sidebaroption>h2 {
+h2 {
     /*It will select only h2 elements of sidebar*/
     font-size: 1.22em;
     font-weight: 800;
     margin-right: 1.22em;
+}
+
+.link {
+    text-decoration: none;
+}
+
+.link:active {
+    color: royalblue;
 }
