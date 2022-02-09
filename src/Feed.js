@@ -14,9 +14,9 @@ function Feed() {
     const [error_data,setError_data]=useState("")
     const [dbdata,setDbdata] = useState([]);
     const [posts, setPosts] = useState({
-        name:"Babita Pandey",
-        username:"Babita@183",
-        email:"bp789792@gmail.com",
+        name:"Vaibhav Pandey",
+        username:"Vaibhav@183",
+        email:"vp789792@gmail.com",
         post_data:"",
         post_url:"",
         verified:true,

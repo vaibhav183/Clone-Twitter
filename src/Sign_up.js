@@ -111,18 +111,21 @@ export default function SignUp() {
             >
               Sign Up
             </Button>
-            <Grid container justifyContent="flex-end">
-              <Grid item>
+            <Link to="/sign_in" style={{textDecoration:"underline wavy blue"}}>
+            <Button fullWidth variant="text">Already have an account? Sign in</Button>
+            </Link>
+            <Link to="/" style={{textDecoration:"none"}}>
+            <Button fullWidth sx={{ mt: 2, mb: 5 }} variant="text">Home Page</Button>
+            </Link>
+            {/* <Grid justifyContent="center">
                 <Link to="/sign_in">
                 <Linked href="#" variant="body2">
                   Already have an account? Sign in
                 </Linked>
                 </Link>
-              </Grid>
-            </Grid>
+            </Grid> */}
           </Box>
         </Box>
-        <Copyright sx={{ mt: 5 }} />
       </Container>
     </ThemeProvider>
   );

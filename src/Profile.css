@@ -1,0 +1,47 @@
+.Profile_Photo {
+    margin-left: auto !important;
+    margin-right: auto !important;
+    height: 4em !important;
+    width: 4em !important;
+}
+
+.follower {
+    justify-content: center !important;
+    width: 60% !important;
+    background-color: #E16D54 !important;
+    color: white !important;
+    border-radius: 0.2em !important;
+    text-align: right !important;
+}
+
+Button {
+    color: white !important;
+    font-weight: 50 !important;
+}
+
+.following {
+    justify-content: center !important;
+    background-color: #9740c0 !important;
+    margin-top: 1em !important;
+    border-radius: 0.2em !important;
+    width: 60% !important;
+}
+
+.comments {
+    height: 36em;
+    overflow-y: scroll;
+}
+
+.comments::-webkit-scrollbar {
+    display: none;
+}
+
+
+/* Hide scrollbar for IE, Edge and Firefox */
+
+.comments {
+    -ms-overflow-style: none;
+    /* IE and Edge */
+    scrollbar-width: none;
+    /* Firefox */
+}

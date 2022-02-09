@@ -14,19 +14,6 @@ import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
-function Copyright(props) {
-  return (
-    <Typography variant="body2" color="text.secondary" align="center" {...props}>
-      {'Copyright © '}
-      <Linked color="inherit" href="https://material-ui.com/">
-        Your Website
-      </Linked>{' '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  );
-}
-
 const theme = createTheme();
 
 export default function SignIn() {
@@ -93,21 +80,23 @@ export default function SignIn() {
             </Button>
             <Grid container>
               <Grid item xs>
-                <Linked href="#" variant="body2">
+                <Linked href="#" style={{textDecoration:"none"}}>
                   Forgot password?
                 </Linked>
               </Grid>
               <Grid item>
-                <Link to="/signup">
-                <Linked variant="body2">
+                <Link to="/signup" style={{textDecoration:"none"}}>
+                {/* <Linked variant="body2"> */}
                   {"Don't have an account? Sign Up"}
-                </Linked>
+                {/* </Linked> */}
                 </Link>
               </Grid>
             </Grid>
+            <Link to="/" style={{textDecoration:"none"}}>
+            <Button fullWidth sx={{ mt: 2, mb: 5 }} variant="text">Home Page</Button>
+            </Link>
           </Box>
         </Box>
-        <Copyright sx={{ mt: 8, mb: 4 }} />
       </Container>
     </ThemeProvider>
   );
