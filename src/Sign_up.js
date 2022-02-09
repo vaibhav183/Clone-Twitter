@@ -111,8 +111,8 @@ export default function SignUp() {
             >
               Sign Up
             </Button>
-            <Link to="/sign_in" style={{textDecoration:"underline wavy blue"}}>
-            <Button fullWidth variant="text">Already have an account? Sign in</Button>
+            <Link to="/sign_in" style={{textDecoration:"none"}}>
+            <Button fullWidth variant="text" style={{bgcolor:"red"}}>Already have an account? Sign in</Button>
             </Link>
             <Link to="/" style={{textDecoration:"none"}}>
             <Button fullWidth sx={{ mt: 2, mb: 5 }} variant="text">Home Page</Button>
