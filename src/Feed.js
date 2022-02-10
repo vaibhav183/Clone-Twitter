@@ -137,7 +137,7 @@ function Feed() {
             </div>
             <form className="form" method="POST">
                 <div className="input_box">
-                <Avatar alt="Vaibhav Sharp" src={Vaibhav} />
+                <Avatar alt="Vaibhav Pandey" src={Vaibhav} />
                 <textarea placeholder="What's happening in college...." value={posts.text} onChange={textchange}  />
                 </div>
                 <div className="posting_data">

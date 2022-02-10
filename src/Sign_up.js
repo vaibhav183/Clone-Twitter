@@ -1,4 +1,6 @@
 import * as React from 'react';
+import { useState, useEffect } from 'react';
+import $ from 'jquery'; 
 import {Link} from 'react-router-dom'
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
@@ -13,6 +15,8 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import {blank,wrong,check,success} from "./error";
+import emailjs from 'emailjs-com'
 
 function Copyright(props) {
   return (
@@ -30,6 +34,33 @@ function Copyright(props) {
 const theme = createTheme();
 
 export default function SignUp() {
+
+  function isEmail(email) {
+    var regex = /^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+    return regex.test(email);
+  }
+  
+
+  const [email_lable,setEmail_lable]=useState("Email Address")
+  const [email_value,setEmail_value]=useState("")
+  const [email_verified,setEmail_verified]=useState(false)
+  const [email_error,setEmail_error]=useState("")
+  const [email_border,setEmail_border]=useState("")
+
+  const emailVarification = (event) => {
+    event.preventDefault();
+    // eslint-disable-next-line no-console
+    if(($('#email').val())===""){
+      setEmail_error(blank())
+    }
+    // console.log($('#email').val());
+    else if(isEmail($('#email').val())===false){
+      setEmail_error(wrong())
+    }
+    else{
+    }
+  };
+  
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -63,7 +94,7 @@ export default function SignUp() {
               <Grid item xs={12} sm={6}>
                 <TextField
                   autoComplete="fname"
-                  name="firstName"
+                  name="fName"
                   required
                   fullWidth
                   id="firstName"
@@ -77,19 +108,29 @@ export default function SignUp() {
                   fullWidth
                   id="lastName"
                   label="Last Name"
-                  name="lastName"
+                  name="lName"
                   autoComplete="lname"
                 />
               </Grid>
-              <Grid item xs={12}>
+              <Grid item xs={9}>
                 <TextField
                   required
                   fullWidth
                   id="email"
-                  label="Email Address"
+                  label=""
                   name="email"
                   autoComplete="email"
+                  helperText={email_error}
                 />
+              </Grid>
+              <Grid item xs={3}>
+                <Button
+                fullWidth
+                variant="contained"
+                onClick={emailVarification}
+                style={{height:'60%',marginTop:'auto',marginBottom:'auto'}}
+                > Check
+                </Button>
               </Grid>
               <Grid item xs={12}>
                 <TextField
