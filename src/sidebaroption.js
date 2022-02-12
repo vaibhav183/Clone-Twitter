@@ -5,29 +5,102 @@ import {useSelector,useDispatch} from "react-redux"
 import {setNull,setTokenNumber} from "./actions/index";
 import changeToken from './reducers/setToken';
 import Popper from '@mui/material/Popper';
-import Test from './test';
+import Box from '@mui/material/Box';
+import Modal from '@mui/material/Modal';
+import Button from '@mui/material/Button';
+import LoadingButton from '@mui/lab/LoadingButton';
+import $ from 'jquery';
+import SaveIcon from '@mui/icons-material/Save';
+import Fade from '@mui/material/Fade';
+import Backdrop from '@mui/material/Backdrop';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
+import DialogTitle from '@mui/material/DialogTitle';
+import useMediaQuery from '@mui/material/useMediaQuery';
+import { useTheme } from '@mui/material/styles';
+
+const style = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 400,
+    bgcolor: 'background.paper',
+    border: '2px ridge #000',
+    boxShadow: 24,
+    pt: 2,
+    px: 4,
+    pb: 3,
+  };
 
 function Sidebaroption({text,Icon,rou_val}) {
     const dispatch = useDispatch();
-    const [anchorEl, setAnchorEl] = React.useState(null);
-    const [open, setOpen] = React.useState(false);
     const [contained,setContained]=useState(true)
+    const theme = useTheme();
+    const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
 
+    //For SignOut Pop up
+    const [open, setOpen] = React.useState(false);
+    const handleOpen = () => {
+        setOpen(true);
+    };
+    const handleClose = () => {
+        setOpen(false);
+    };
+
+    //For deleting local storage and change Store
     const signout=()=>{
-        setOpen(true)
-
-        // dispatch(setNull(null))
-        // localStorage.removeItem('token');
-        
+        $('#loading').removeClass('loading');
+        $('#yesButton').addClass('loading');
+        setTimeout(()=>{
+            localStorage.removeItem('token');
+            dispatch(setNull());
+        },5000)
     }
+
     if(rou_val=='signout'){
        return(
             <div className="sidebaroption">
-                <Popper open={open} transition>
-                <Test />
-                </Popper>
                 <Icon/>
-                <h2 className="link" onClick={signout}>{text}</h2>
+                <h2 className="link" onClick={handleOpen}>{text}</h2>
+                <Dialog
+                    fullScreen={fullScreen}
+                    open={open}
+                    onClose={handleClose}
+                    aria-labelledby="alert-dialog-title"
+                    aria-describedby="alert-dialog-description"
+                    closeAfterTransition
+                    BackdropComponent={Backdrop}
+                    BackdropProps={{
+                    timeout: 1000,
+                    }}
+                >
+                    <DialogTitle id="alert-dialog-title" style={{fontSize:'2em', fontWeight:600}}>
+                    {"Sign Out"}
+                    </DialogTitle>
+                    <DialogContent>
+                    <DialogContentText id="alert-dialog-description" style={{color:'#451452',fontSize:'1.1em'}}>
+                        Thanks for visiting our site.Hope you enjoyed it a lot and visit again our site soon.<br/>
+                        Do you really want to <b>Sign Out</b>?
+                    </DialogContentText>
+                    </DialogContent>
+                    <DialogActions>
+                    <Button variant="outlined" onClick={handleClose}>Dismiss</Button>
+                    <Button variant="contained" id='yesButton' onClick={signout}>Yes</Button>
+                    <LoadingButton
+                        className="loading"
+                        id='loading'
+                        loading
+                        loadingPosition="start"
+                        startIcon={<SaveIcon />}
+                        variant="outlined"
+                        >
+                        Signing Out
+                    </LoadingButton>
+                    </DialogActions>
+                </Dialog>
             </div>
        );
     }

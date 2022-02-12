@@ -31,7 +31,7 @@ function Sidebar() {
             setAuthenticated(true);
             }
         },[localStorage.getItem('token')]);
-    if(authenticated==true){
+    if(myState!=null){
         return(
         <div className = "sidebar" >
             <TwitterIcon className="twitter-icon"/>

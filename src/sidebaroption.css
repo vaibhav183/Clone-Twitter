@@ -33,3 +33,7 @@ h2 {
 .link:active {
     color: royalblue;
 }
+
+.loading {
+    display: none !important;
+}

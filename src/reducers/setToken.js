@@ -1,4 +1,4 @@
-const intialState=null;
+const intialState=localStorage.getItem('token');
 
 const changeToken=(state=intialState,action)=>{
     switch(action.type){
