@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import $ from 'jquery'; 
 import "./signup.css"
 import Axios from 'axios'
-import {Link} from 'react-router-dom'
+import {Link,Redirect} from 'react-router-dom'
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import LoadingButton from '@mui/lab/LoadingButton';
@@ -19,11 +19,14 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import {firname,lasname,blank,otpBlank,otpCheck,notStrong,strong,muchStrong,wrong,check,success} from "./error";
+import {firname,lasname,blank,otpBlank,otpCheck,notStrong,strong,muchStrong,wrong,check,verify,verifyOtp,success} from "./error";
 import emailjs from 'emailjs-com'
 import validator from 'validator'
 import IconButton from '@mui/material/IconButton';
 import PhotoCamera from '@mui/icons-material/PhotoCamera';
+import {useSelector,useDispatch} from "react-redux"
+import {setNull,setTokenNumber} from "./actions/index";
+import changeToken from './reducers/setToken';
 
 function Copyright(props) {
   return (
@@ -41,7 +44,8 @@ function Copyright(props) {
 const theme = createTheme();
 
 export default function SignUp() {
-
+  const dispatch = useDispatch();
+  const myState=useSelector((state)=>state.changeToken)
   function isEmail(email) {
     var regex = /^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/;
     return regex.test(email);
@@ -72,12 +76,15 @@ export default function SignUp() {
     else{
       value=undefined
       setPhoto_upload("Only Photo Allowed")
+      setVariant("outlined");
+      setColor("error");
     }
   }
 
   function checking(value){
     if(value!=""){
       setEmail_error("")
+      setOtp_error("")
     }
   }
   function fname_check(value){
@@ -92,6 +99,7 @@ export default function SignUp() {
   }
 
   //ALL USE STATE
+  const [registered,setRegistered]=useState(false)
   const [fname, setFname] = useState('')
   const [variant, setVariant] = useState('contained')
   const [color, setColor] = useState('primary')
@@ -119,6 +127,7 @@ export default function SignUp() {
             setEmail_verified(true);
             $('#verifying').addClass("hide_grid");
             $('#verifed').removeClass("hide_grid");
+            setOtp_error(success())
         }else if(response.data.msg === 'fail'){
           $('#check_grid').removeClass("hide_grid");
           $('#verifying').addClass("hide_grid");
@@ -156,46 +165,87 @@ export default function SignUp() {
     }
   };
   
-
+  // Form Submission
   const submitForm = (event) => {
     event.preventDefault();
-    console.log(event.target[14].files[0])
-    // if($('#firstName').val()==""){
-    //   console.log("hello")
-    //   setFname(firname());
-    // }
-    // else if($('#lastName').val()==""){
-    //   setLname(lasname());
-    // }
-    // else if(email_verified==false){
-    //   setEmail_error(check())
-    // }
-    // else if(pass_verified==false){
-    //   setErrorMessage(muchStrong())
-    // }
-    // else if((event.target[14].files[0]==undefined) || ((event.target[14].files[0].type)!="image/jpeg" && (event.target[14].files[0].type)!="image/png")){
-    //   setVariant("outlined");
-    //   setColor("error");
-    // }
-    // else{
+    // console.log(event.target[14].files[0])
+    if($('#firstName').val()==""){
+      console.log("hello")
+      setFname(firname());
+    }
+    else if($('#lastName').val()==""){
+      setLname(lasname());
+    }
+    else if(email_verified==false){
+      setEmail_error(verify())
+      setOtp_error(verifyOtp())
+    }
+    else if(pass_verified==false){
+      setErrorMessage(muchStrong())
+    }
+    else{
+      $('#signingUp').removeClass("hide_grid");
+      $('#signUp').addClass("hide_grid");
+      if((event.target[14].files[0]!=undefined) && ((event.target[14].files[0].type)=="image/jpeg" || (event.target[14].files[0].type)=="image/png") && (event.target[14].files[0].size)>0){
       const formData = new FormData()
        formData.append('file', event.target[14].files[0])
        formData.append('upload_preset','postimage' )
        Axios.post("https://api.cloudinary.com/v1_1/vaibhav183vibhu/image/upload",formData)
        .then(async function (response){
-         console.log("Success");
+        Axios.post("http://localhost:3001/user_signup",{fname:$('#firstName').val(),lname:$('#lastName').val(),email:$('#email').val(),pass:$('#password').val(),img:response.data.secure_url})
+        .then((response)=>{
+          if (response.data.msg === 'success'){
+            dispatch(setTokenNumber(response.data.token))
+            localStorage.setItem('token',(response.data.token));
+            setRegistered(true);
+          }else if(response.data.msgS === 'fail'){
+            alert("Some Error Occured")
+            $('#signingUp').addClass("hide_grid");
+            $('#signUp').removeClass("hide_grid");
+          }
+        })
+        .catch((error)=>{
+          alert("Ooh!! something went wrong")
+          $('#signingUp').addClass("hide_grid");
+          $('#signUp').removeClass("hide_grid");
+        })
        })
        .catch((error)=>{
-         console.log("errors")
+         alert("Ooh!! something went wrong")
+         $('#signingUp').addClass("hide_grid");
+         $('#signUp').removeClass("hide_grid");
        })
-    // }
+      }
+      else{
+        Axios.post("http://localhost:3001/user_signup",{fname:$('#firstName').val(),lname:$('#lastName').val(),email:$('#email').val(),pass:$('#password').val(),img:""})
+        .then((response)=>{
+          if (response.data.msg === 'success'){
+            dispatch(setTokenNumber(response.data.token))
+            localStorage.setItem('token',(response.data.token));
+            setRegistered(true);
+          }else if(response.data.msg === 'fail'){
+            alert("Some Error Occured")
+            $('#signingUp').addClass("hide_grid");
+            $('#signUp').removeClass("hide_grid");
+          }
+        })
+        .catch((error)=>{
+          alert("Ooh!! Something went wrong")
+          $('#signingUp').addClass("hide_grid");
+          $('#signUp').removeClass("hide_grid");
+        })
+      }
+    }
     // const data = new FormData(event.currentTarget);
     // console.log({
     //   email: data.get('email'),
     //   password: data.get('password'),
     // });
   };
-
+  if(myState!=null){
+    return <Redirect to="/" />
+  }
+  else{
   return (
     <ThemeProvider theme={theme}>
       <Container component="main" maxWidth="xs">
@@ -288,6 +338,7 @@ export default function SignUp() {
                   fullWidth
                   id="otp"
                   label="Enter OTP"
+                  onChange={(e) => checking(e.target.value)}
                   name="otp"
                   autoComplete="OTP"
                   helperText={otp_error}
@@ -299,7 +350,7 @@ export default function SignUp() {
                 variant="contained"
                 id='otp_bot'
                 onClick={otpVarification}
-                style={{height:'3em',marginTop:'7%'}}
+                style={{height:'3em',marginTop:'6%'}}
                 > Verify
                 </Button>
               </Grid>
@@ -307,7 +358,7 @@ export default function SignUp() {
 
               {/* Otp Verified */}
               <Grid item xs={4} className="hide_grid" id="verifed">
-              <Button variant="outlined" color="success" style={{height:'3em',marginTop:'7%'}} disabled>
+              <Button variant="outlined" color="success" style={{height:'3em',marginTop:'6%'}} disabled>
                 Verified
               </Button>
               </Grid>
@@ -345,11 +396,28 @@ export default function SignUp() {
             <Button
               type="submit"
               fullWidth
+              id="signUp"
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
             >
               Sign Up
             </Button>
+
+            {/* Signing Up */}
+            <LoadingButton
+              loading
+              className="hide_grid"
+              id="signingUp"
+              fullWidth
+              loadingPosition="start"
+              startIcon={<SaveIcon />}
+              sx={{ mt: 3, mb: 2,bgcolor:'#bd00fc' }}
+              variant="contained"
+            >
+              Signing up...
+            </LoadingButton>
+
+
             <Link to="/sign_in" style={{textDecoration:"none"}}>
             <Button fullWidth variant="text" style={{bgcolor:"red"}}>Already have an account? Sign in</Button>
             </Link>
@@ -368,4 +436,5 @@ export default function SignUp() {
       </Container>
     </ThemeProvider>
   );
+  }
 }

@@ -7,9 +7,11 @@ import Button from '@mui/material/Button';
 import Axios from 'axios'
 import Post from "./Post"
 import FormData from 'form-data';
+import {useSelector,useDispatch} from "react-redux"
 // import {Image} from 'cloudinary-react'
 
 function Feed() {
+    const myState=useSelector((state)=>state.changeToken)
     const [dataPost,setDataPost]=useState(null)
     const [error_data,setError_data]=useState("")
     const [dbdata,setDbdata] = useState([]);
@@ -26,6 +28,7 @@ function Feed() {
        setPosts({ ...posts, text:(e.target.value)})
    }
    useEffect(()=>{
+       let abortController = new AbortController(); 
        Axios.get("https://clone-twitter-by-vaibhav.herokuapp.com/fetch")  
        .then((data)=>{
             setDbdata((data.data).reverse())
@@ -33,7 +36,10 @@ function Feed() {
        .catch(()=>{
            console.log("Error, Can't fetch from database")
        })
-   })
+       return () => {  
+        abortController.abort();  
+       }  
+   },[])
 
    const submission=async(e)=>{
        e.preventDefault();
@@ -117,6 +123,7 @@ function Feed() {
      }
    }
 
+
    const [uploadName,setUploadName] =useState("Upload Image");
    const uploaded=(e)=>{
        var s=(e.target.files[0].type)
@@ -130,10 +137,43 @@ function Feed() {
     setPosts({...posts,post_url:e.target.value})
    }
 
+   //Authentication Checking
+   const [authenticated,setAuthenticated]=useState(false)
+   useEffect(() => {
+        if(localStorage.getItem('token')==null){
+            setAuthenticated(false);
+        }
+        else{
+            setAuthenticated(true);
+        }
+    },[localStorage.getItem('token')]);
+
+   // Returning Object
+   if(myState==null){
+       return (
+        <div className="feed">
+            <div className="feed_header">
+                <h1 style={{marginTop:1}}>Home</h1>
+            </div>
+            {dbdata.map((post) => (  
+            <Post 
+            display_pic={Vaibhav} 
+            Name={post.name} 
+            Username={post.username} 
+            verified={post.verified} 
+            text={post.text} 
+            post_data={post.post_data}
+            post_url={post.post_url} 
+            />
+             ))}
+        </div>
+       )
+   }
+   else{
     return (
         <div className="feed">
             <div className="feed_header">
-                <h2>Home</h2>
+                <h1 style={{marginTop:1}}>Home</h1>
             </div>
             <form className="form" method="POST">
                 <div className="input_box">
@@ -153,7 +193,7 @@ function Feed() {
                 
             </form>
             {dbdata.map((post) => (  
-            <Post 
+            <Post
             display_pic={Vaibhav} 
             Name={post.name} 
             Username={post.username} 
@@ -165,6 +205,7 @@ function Feed() {
              ))}
         </div>
     )
+    }
 }
 
 export default Feed;

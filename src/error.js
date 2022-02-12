@@ -2,57 +2,67 @@ import react from 'react'
 
 function blank(){
     return(
-    <h3 style={{color:'red',marginTop:'0px',marginBottom:'1px'}}>Provide Email Address</h3>
+    <span style={{color:'red',marginTop:'0px',marginBottom:'1px',fontWeight:600,fontSize:"1.3em"}}>Provide Email Address</span>
     );
 }
 function otpBlank(){
     return(
-    <h3 style={{color:'red',marginTop:'0px',marginBottom:'1px'}}>Enter OTP</h3>
+    <span style={{color:'red',marginTop:'0px',marginBottom:'1px',fontWeight:600,fontSize:"1.3em"}}>Enter OTP</span>
     );
 }
 function otpCheck(){
     return(
-    <h3 style={{color:'red',marginTop:'0px',marginBottom:'1px'}}>Wrong OTP!! Please Try Again...</h3>
+    <span style={{color:'red',marginTop:'0px',marginBottom:'1px',fontWeight:600,fontSize:"1.3em"}}>Wrong OTP!! Please Try Again...</span>
     );
 }
 function notStrong(){
     return(
-    <h3 style={{color:'#ff5500',marginTop:'0px',marginBottom:'1px'}}>Not Enough Good...</h3>
+    <span style={{color:'#ff5500',marginTop:'0px',marginBottom:'1px',fontWeight:600,fontSize:"1.3em"}}>Not Enough Good...</span>
     );
 }function firname(){
     return(
-    <h3 style={{color:'#db4112',marginTop:'0px',marginBottom:'1px'}}>Enter First Name</h3>
+    <span style={{color:'#db4112',marginTop:'0px',marginBottom:'0px',fontWeight:600,fontSize:"1.3em"}}>Enter First Name</span>
     );
 }
 function lasname(){
     return(
-    <h3 style={{color:'#db4112',marginTop:'0px',marginBottom:'1px'}}>Enter Last Name</h3>
+    <span style={{color:'#db4112',marginTop:'0px',marginBottom:'1px',fontWeight:600,fontSize:"1.3em"}}>Enter Last Name</span>
     );
 }
 function strong(){
     return(
-    <h3 style={{color:'#11ad31',marginTop:'0px',marginBottom:'1px'}}>Perfect Password!!</h3>
+    <span style={{color:'#11ad31',marginTop:'0px',marginBottom:'1px',fontWeight:600,fontSize:"1.3em"}}>Perfect Password!!</span>
     );
 }
 function muchStrong(){
     return(
-    <h3 style={{color:'#db4112',marginTop:'0px',marginBottom:'1px'}}>Strong Your Password...</h3>
+    <span style={{color:'#db4112',marginTop:'0px',marginBottom:'1px',fontWeight:600,fontSize:"1.3em"}}>Strong Your Password...</span>
     );
 }
 function wrong(){
     return(
-    <h3 style={{color:'red',marginTop:'0px',marginBottom:'1px'}}>Incorrect Format</h3>
+    <span style={{color:'red',marginTop:'0px',marginBottom:'1px',fontWeight:600,fontSize:"1.3em"}}>Incorrect Format</span>
     );
 }
 function check(){
     return(
-    <h3 style={{color:'red',marginTop:'0px',marginBottom:'1px'}}>Incorrect Email Address</h3>
+    <span style={{color:'red',marginTop:'0px',marginBottom:'1px',fontWeight:600,fontSize:"1.3em"}}>Incorrect Email Address</span>
+    );
+}
+function verify(){
+    return(
+    <span style={{color:'red',marginTop:'0px',marginBottom:'1px',fontWeight:600,fontSize:"1.3em"}}>Verify Your Email Address</span>
+    );
+}
+function verifyOtp(){
+    return(
+    <span style={{color:'red',marginTop:'0px',marginBottom:'1px',fontWeight:600,fontSize:"1.3em"}}>Verify Your OTP</span>
     );
 }
 function success(){
     return(
-    <h3 style={{color:'green',marginTop:'0px',marginBottom:'1px'}}>Correct Email Address</h3>
+    <span style={{color:'green',marginTop:'0px',marginBottom:'1px',fontWeight:600,fontSize:"1.3em"}}>Email Verified</span>
     );
 }
 
-export {firname,lasname,blank,otpBlank,otpCheck,notStrong,strong,muchStrong,wrong,check,success};
+export {firname,lasname,blank,otpBlank,otpCheck,notStrong,strong,muchStrong,wrong,check,verify,verifyOtp,success};
