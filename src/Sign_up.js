@@ -19,7 +19,7 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import {firname,lasname,blank,otpBlank,otpCheck,notStrong,strong,muchStrong,wrong,check,verify,verifyOtp,success} from "./error";
+import {firname,lasname,blank,otpBlank,otpCheck,notStrong,strong,muchStrong,wrong,check,error_occur,already,verify,verifyOtp,success} from "./error";
 import emailjs from 'emailjs-com'
 import validator from 'validator'
 import IconButton from '@mui/material/IconButton';
@@ -134,6 +134,11 @@ export default function SignUp() {
           setOtp_error(otpCheck())
         }
       })
+      .catch((err)=>{
+        $('#check_grid').removeClass("hide_grid");
+          $('#verifying').addClass("hide_grid");
+          setOtp_error(error_occur())
+      })
     }
   };
 
@@ -151,7 +156,12 @@ export default function SignUp() {
       $('#verifying').removeClass("hide_grid");
       Axios.post("http://localhost:3001/email_verification",{tomail:$('#email').val()})
       .then((response)=>{
-          if (response.data.msg === 'success'){
+        if(response.data.msg === 'found'){
+          $('#verify_grid').removeClass("hide_grid");
+          $('#verifying').addClass("hide_grid");
+          setEmail_error(already())
+        }
+        else if (response.data.msg === 'success'){
             $('#email_grid').addClass("hide_grid");
             $('#verifying').addClass("hide_grid");
             $('#otp_grid').removeClass("hide_grid");
@@ -161,6 +171,11 @@ export default function SignUp() {
           $('#verifying').addClass("hide_grid");
           setEmail_error(check())
         }
+      })
+      .catch((err)=>{
+        setEmail_error(error_occur())
+        $('#verify_grid').removeClass("hide_grid");
+        $('#verifying').addClass("hide_grid");
       })
     }
   };

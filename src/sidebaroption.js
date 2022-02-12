@@ -4,9 +4,6 @@ import "./sidebaroption.css";
 import {useSelector,useDispatch} from "react-redux"
 import {setNull,setTokenNumber} from "./actions/index";
 import changeToken from './reducers/setToken';
-import Popper from '@mui/material/Popper';
-import Box from '@mui/material/Box';
-import Modal from '@mui/material/Modal';
 import Button from '@mui/material/Button';
 import LoadingButton from '@mui/lab/LoadingButton';
 import $ from 'jquery';
@@ -77,11 +74,12 @@ function Sidebaroption({text,Icon,rou_val}) {
                     timeout: 1000,
                     }}
                 >
-                    <DialogTitle id="alert-dialog-title" style={{fontSize:'2em', fontWeight:600}}>
-                    {"Sign Out"}
+                    <DialogTitle id="alert-dialog-title" style={{fontSize:'1.5em', fontWeight:600,textAlign:'center'}}>
+                    !! Sign Out !!
+                    <hr/>
                     </DialogTitle>
                     <DialogContent>
-                    <DialogContentText id="alert-dialog-description" style={{color:'#451452',fontSize:'1.1em'}}>
+                    <DialogContentText id="alert-dialog-description" style={{color:'#451452',fontSize:'1em'}}>
                         Thanks for visiting our site.Hope you enjoyed it a lot and visit again our site soon.<br/>
                         Do you really want to <b>Sign Out</b>?
                     </DialogContentText>

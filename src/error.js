@@ -12,7 +12,7 @@ function otpBlank(){
 }
 function otpCheck(){
     return(
-    <span style={{color:'red',marginTop:'0px',marginBottom:'1px',fontWeight:600,fontSize:"1.3em"}}>Wrong OTP!! Please Try Again...</span>
+    <span style={{color:'red',marginTop:'0px',marginBottom:'1px',fontWeight:600,fontSize:"1.3em"}}>Wrong OTP!! Please Try Again</span>
     );
 }
 function notStrong(){
@@ -39,6 +39,11 @@ function muchStrong(){
     <span style={{color:'#db4112',marginTop:'0px',marginBottom:'1px',fontWeight:600,fontSize:"1.3em"}}>Strong Your Password...</span>
     );
 }
+function notMatch(){
+    return(
+    <span style={{color:'#db4112',marginTop:'0px',marginBottom:'1px',fontWeight:600,fontSize:"1.3em"}}>Password didn't match...</span>
+    );
+}
 function wrong(){
     return(
     <span style={{color:'red',marginTop:'0px',marginBottom:'1px',fontWeight:600,fontSize:"1.3em"}}>Incorrect Format</span>
@@ -47,6 +52,16 @@ function wrong(){
 function check(){
     return(
     <span style={{color:'red',marginTop:'0px',marginBottom:'1px',fontWeight:600,fontSize:"1.3em"}}>Incorrect Email Address</span>
+    );
+}
+function error_occur(){
+    return(
+    <span style={{color:'red',marginTop:'0px',marginBottom:'1px',fontWeight:600,fontSize:"1.3em"}}>Some Error Occured! Try Again</span>
+    );
+}
+function already(){
+    return(
+    <span style={{color:'red',marginTop:'0px',marginBottom:'1px',fontWeight:600,fontSize:"1.3em"}}>Email Already Exist!!</span>
     );
 }
 function verify(){
@@ -65,4 +80,4 @@ function success(){
     );
 }
 
-export {firname,lasname,blank,otpBlank,otpCheck,notStrong,strong,muchStrong,wrong,check,verify,verifyOtp,success};
+export {firname,lasname,blank,otpBlank,notMatch,otpCheck,notStrong,strong,muchStrong,wrong,check,error_occur,already,verify,verifyOtp,success};
