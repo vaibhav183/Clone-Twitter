@@ -25,8 +25,9 @@ import validator from 'validator'
 import IconButton from '@mui/material/IconButton';
 import PhotoCamera from '@mui/icons-material/PhotoCamera';
 import {useSelector,useDispatch} from "react-redux"
-import {setNull,setTokenNumber} from "./actions/index";
+import {setNull,setTokenNumber,setTokenNumber1} from "./actions/index";
 import changeToken from './reducers/setToken';
+import changeToken1 from './reducers/setToken1';
 
 function Copyright(props) {
   return (
@@ -46,6 +47,7 @@ const theme = createTheme();
 export default function SignUp() {
   const dispatch = useDispatch();
   const myState=useSelector((state)=>state.changeToken)
+  const myState1=useSelector((state)=>state.changeToken1)
   function isEmail(email) {
     var regex = /^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/;
     return regex.test(email);
@@ -210,10 +212,12 @@ export default function SignUp() {
         Axios.post("http://localhost:3001/user_signup",{fname:$('#firstName').val(),lname:$('#lastName').val(),email:$('#email').val(),pass:$('#password').val(),img:response.data.secure_url})
         .then((response)=>{
           if (response.data.msg === 'success'){
-            dispatch(setTokenNumber(response.data.token))
             localStorage.setItem('token',(response.data.token));
+            localStorage.setItem('token1',(response.data.token1));
+            dispatch(setTokenNumber(response.data.token))
+            dispatch(setTokenNumber1(response.data.token1))
             setRegistered(true);
-          }else if(response.data.msgS === 'fail'){
+          }else if(response.data.msg === 'fail'){
             alert("Some Error Occured")
             $('#signingUp').addClass("hide_grid");
             $('#signUp').removeClass("hide_grid");
@@ -236,7 +240,9 @@ export default function SignUp() {
         .then((response)=>{
           if (response.data.msg === 'success'){
             dispatch(setTokenNumber(response.data.token))
+            dispatch(setTokenNumber1(response.data.token1))
             localStorage.setItem('token',(response.data.token));
+            localStorage.setItem('token1',(response.data.token1));
             setRegistered(true);
           }else if(response.data.msg === 'fail'){
             alert("Some Error Occured")
@@ -257,7 +263,7 @@ export default function SignUp() {
     //   password: data.get('password'),
     // });
   };
-  if(myState!=null){
+  if(myState!=null && myState1!=null){
     return <Redirect to="/" />
   }
   else{

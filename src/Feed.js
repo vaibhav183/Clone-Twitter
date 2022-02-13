@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import "./feed.css"
+import 'animate.css';
 import Avatar from '@mui/material/Avatar';
 import Vaibhav from "./public/link4.jpg"
 import FileUploadIcon from '@mui/icons-material/FileUpload';
@@ -8,10 +9,33 @@ import Axios from 'axios'
 import Post from "./Post"
 import FormData from 'form-data';
 import {useSelector,useDispatch} from "react-redux"
+import axios from 'axios';
 // import {Image} from 'cloudinary-react'
+
+function stringToColor(string) {
+    let hash = 0;
+    let i;
+    for (i = 0; i < string.length; i += 1) {
+      hash = string.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    let color = '#';
+    for (i = 0; i < 3; i += 1) {
+      const value = (hash >> (i * 8)) & 0xff;
+      color += `00${value.toString(16)}`.substr(-2);
+    }
+    return color;
+  }
+  
+  function stringAvatar(name) {
+    return {
+      sx: {bgcolor: stringToColor(name)},
+      children: `${name.split(' ')[0][0]}${name.split(' ')[1][0]}`,
+    };
+  }
 
 function Feed() {
     const myState=useSelector((state)=>state.changeToken)
+    const myState1=useSelector((state)=>state.changeToken1)
     const [dataPost,setDataPost]=useState(null)
     const [error_data,setError_data]=useState("")
     const [dbdata,setDbdata] = useState([]);
@@ -138,22 +162,42 @@ function Feed() {
    }
 
    //Authentication Checking
-   const [authenticated,setAuthenticated]=useState(false)
+   const [user_data, setUser_data] = useState({
+        name:"",
+        username:"",
+        email:"",
+        comments:[],
+        verified:false,
+        imgurl:"",
+        followers:0,
+        following:0
+    });
    useEffect(() => {
-        if(localStorage.getItem('token')==null){
-            setAuthenticated(false);
+    Axios.post("http://localhost:3001/fetching_data_user",{token:myState,token1:myState1})
+    .then((response)=>{
+        if(response.data.msg=='success'){
+            setUser_data({...user_data,
+                name:response.data.name,
+                email:response.data.email,
+                comments:response.data.comments,
+                verified:response.data.verified,
+                imgurl:response.data.imgurl,
+                followers:response.data.followers,
+                following:response.data.following
+            })
         }
-        else{
-            setAuthenticated(true);
-        }
-    },[localStorage.getItem('token')]);
+    })
+    .catch((err)=>{
+        console.log(err)
+    })
+    },[]);
 
    // Returning Object
-   if(myState==null){
+   if(myState==null || myState1==null){
        return (
         <div className="feed">
             <div className="feed_header">
-                <h1 style={{marginTop:1}}>Home</h1>
+                <h1 className="animate__animated animate__backInUp" style={{marginTop:1}}>Home</h1>
             </div>
             {dbdata.map((post) => (  
             <Post 
@@ -173,11 +217,11 @@ function Feed() {
     return (
         <div className="feed">
             <div className="feed_header">
-                <h1 style={{marginTop:1}}>Home</h1>
+                <h1 className="animate__animated animate__backInUp" style={{marginTop:2}}>Welcome {user_data.name}</h1>
             </div>
             <form className="form" method="POST">
                 <div className="input_box">
-                <Avatar alt="Vaibhav Pandey" src={Vaibhav} />
+                <Avatar {...stringAvatar("Vaibhav Pandey")} src={user_data.imgurl} />
                 <textarea placeholder="What's happening in college...." value={posts.text} onChange={textchange}  />
                 </div>
                 <div className="posting_data">

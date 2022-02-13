@@ -1,5 +1,6 @@
 import * as React from 'react';
 import {Link} from 'react-router-dom'
+import {Redirect} from 'react-router-dom'
 import $ from 'jquery';
 import './Sign_in.css'
 import Avatar from '@mui/material/Avatar';
@@ -25,15 +26,22 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';
 import Axios from 'axios'
 import validator from 'validator'
-import {firname,lasname,blank,otpBlank,notMatch,otpCheck,notStrong,strong,muchStrong,wrong,check,error_occur,already,verify,verifyOtp,success} from "./error";
+import {firname,lasname,blank,otpBlank,passblank,notMatch,otpCheck,detail_wrong,notStrong,strong,muchStrong,wrong,check,error_occur,already,verify,verifyOtp,success} from "./error";
+import {useSelector,useDispatch} from "react-redux"
+import {setNull,setTokenNumber,setTokenNumber1} from "./actions/index";
 
 const theme = createTheme();
 
 export default function SignIn() {
+  const dispatch = useDispatch();
+  const myState=useSelector((state)=>state.changeToken)
+  const myState1=useSelector((state)=>state.changeToken1)
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
   const [open, setOpen] = React.useState(false);
   const [msg,setMsg]=React.useState("")
+  const [loginmsg,setLoginmsg]=React.useState("")
+  const [passmsg,setPassmsg]=React.useState("")
     const handleOpen = () => {
         setOpen(true);
         setMsg("")
@@ -43,7 +51,41 @@ export default function SignIn() {
         setMsg("")
     };
     const handleSubmit=(e)=>{
-      console.log(e)
+      if(($('#email').val())=="")
+        setLoginmsg(blank())
+      else if(isEmail($('#email').val())==false){
+        setLoginmsg(wrong())
+      }
+      else if(($('#password').val())=="")
+        setPassmsg(passblank())
+      else{
+        $('#signin').addClass('loading');
+        $('#signing').removeClass('loading');
+        Axios.post("http://localhost:3001/user_signin",{email:($('#email').val()),pass:($('#password').val())})
+        .then((response)=>{
+          if(response.data.msg=='success'){
+            localStorage.setItem('token',(response.data.token));
+            localStorage.setItem('token1',(response.data.token1));
+            dispatch(setTokenNumber(response.data.token))
+            dispatch(setTokenNumber1(response.data.token1))
+          }
+          else if(response.data.msg=='wrong'){
+            $('#signin').removeClass('loading');
+            $('#signing').addClass('loading');
+            setPassmsg(detail_wrong())
+          }
+          else{
+            $('#signin').removeClass('loading');
+            $('#signing').addClass('loading');
+            setPassmsg(error_occur())
+          }
+        })
+        .catch((err)=>{
+          $('#signin').removeClass('loading');
+          $('signing').addClass('loading');
+          setPassmsg(error_occur())
+        })
+      }
     }
     //Email Validator
     function isEmail(email) {
@@ -58,9 +100,11 @@ export default function SignIn() {
         minUppercase: 1, minNumbers: 1, minSymbols: 1
       })) {
         setMsg(strong())
+        setPassmsg(strong())
         setPass_verified(true)
       } else {
         setMsg(notStrong())
+        setPassmsg(notStrong())
         setPass_verified(false)
       }
     }
@@ -145,6 +189,7 @@ export default function SignIn() {
         Axios.post("http://localhost:3001/password_change",{tomail:$('#verifyEmail').val(),newpass:$('#new1').val()})
         .then((response)=>{
           if (response.data.msg === 'success'){
+            alert("Password Change Successfully")
             setOpen(false);
           }else if(response.data.msg === 'fail'){
             setMatch(error_occur())
@@ -159,9 +204,14 @@ export default function SignIn() {
       if(value!=""){
       setMsg("")
       setMatch("")
+      setLoginmsg("")
+      setPassmsg("")
       }
     }
-
+  if(myState!=null && myState1!=null){
+    return <Redirect to="/" />
+  }
+  else{
   return (
     <ThemeProvider theme={theme}>
       <Container component="main" maxWidth="xs">
@@ -180,7 +230,7 @@ export default function SignIn() {
           <Typography component="h1" variant="h5">
             Sign in
           </Typography>
-          <Box component="form" onSubmit={handleSubmit} noValidate sx={{ mt: 1 }}>
+          <Box component="form" onClick={handleSubmit} validate sx={{ mt: 1 }}>
             <TextField
               margin="normal"
               required
@@ -190,6 +240,8 @@ export default function SignIn() {
               name="email"
               autoComplete="email"
               autoFocus
+              onChange={(e)=>free(e)}
+              helperText={loginmsg}
             />
             <TextField
               margin="normal"
@@ -199,16 +251,29 @@ export default function SignIn() {
               label="Password"
               type="password"
               id="password"
+              onChange={(e) => free(e)}
               autoComplete="current-password"
+              helperText={passmsg}
             />
             <Button
-              type="submit"
               fullWidth
+              id="signin"
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
             >
               Sign In
             </Button>
+            <LoadingButton
+                className="loading"
+                id='signing'
+                loading
+                fullWidth
+                loadingPosition="start"
+                startIcon={<SaveIcon />}
+                variant="outlined"
+                >
+                Signing in
+            </LoadingButton>
             <Grid container>
               <Grid item xs={5}>
                 <Button onClick={handleOpen} style={{fontSize:'0.78em'}}>
@@ -293,4 +358,5 @@ export default function SignIn() {
       </Dialog>
     </ThemeProvider>
   );
+  }
 }

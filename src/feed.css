@@ -23,14 +23,18 @@
     /* Firefox */
 }
 
+:root {
+    --animate-duration: 1800ms;
+    --animate-delay: 2s;
+}
+
 .feed_header {
     position: sticky;
     top: 0;
     background-color: white;
     z-index: 50;
     border-bottom: 1px solid var(--twitter-background);
-    padding-left: 40%;
-    padding-right: auto;
+    text-align: center;
 }
 
 .form {

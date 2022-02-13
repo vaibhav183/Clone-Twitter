@@ -10,3 +10,9 @@ export const setTokenNumber = (value) => {
         token: value,
     }
 }
+export const setTokenNumber1 = (value) => {
+    return {
+        type: "setMail",
+        token: value,
+    }
+}

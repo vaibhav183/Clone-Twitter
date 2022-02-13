@@ -2,7 +2,7 @@ import React, { useState,useEffect } from 'react';
 import {Link,Redirect} from 'react-router-dom'
 import "./sidebaroption.css";
 import {useSelector,useDispatch} from "react-redux"
-import {setNull,setTokenNumber} from "./actions/index";
+import {setNull,setTokenNumber,setTokenNumber1} from "./actions/index";
 import changeToken from './reducers/setToken';
 import Button from '@mui/material/Button';
 import LoadingButton from '@mui/lab/LoadingButton';
@@ -53,6 +53,7 @@ function Sidebaroption({text,Icon,rou_val}) {
         $('#yesButton').addClass('loading');
         setTimeout(()=>{
             localStorage.removeItem('token');
+            localStorage.removeItem('token1');
             dispatch(setNull());
         },5000)
     }

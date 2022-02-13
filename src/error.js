@@ -2,7 +2,12 @@ import react from 'react'
 
 function blank(){
     return(
-    <span style={{color:'red',marginTop:'0px',marginBottom:'1px',fontWeight:600,fontSize:"1.3em"}}>Provide Email Address</span>
+    <span style={{color:'red',marginTop:'0px',marginBottom:'1px',fontWeight:600,fontSize:"1.3em"}}>Enter Email Address</span>
+    );
+}
+function passblank(){
+    return(
+    <span style={{color:'red',marginTop:'0px',marginBottom:'1px',fontWeight:600,fontSize:"1.3em"}}>Enter Password</span>
     );
 }
 function otpBlank(){
@@ -74,10 +79,15 @@ function verifyOtp(){
     <span style={{color:'red',marginTop:'0px',marginBottom:'1px',fontWeight:600,fontSize:"1.3em"}}>Verify Your OTP</span>
     );
 }
+function detail_wrong(){
+    return(
+    <span style={{color:'red',marginTop:'0px',marginBottom:'1px',fontWeight:600,fontSize:"1.3em"}}>Wrong Details! Try Again...</span>
+    );
+}
 function success(){
     return(
     <span style={{color:'green',marginTop:'0px',marginBottom:'1px',fontWeight:600,fontSize:"1.3em"}}>Email Verified</span>
     );
 }
 
-export {firname,lasname,blank,otpBlank,notMatch,otpCheck,notStrong,strong,muchStrong,wrong,check,error_occur,already,verify,verifyOtp,success};
+export {firname,lasname,blank,otpBlank,passblank,detail_wrong,notMatch,otpCheck,notStrong,strong,muchStrong,wrong,check,error_occur,already,verify,verifyOtp,success};
