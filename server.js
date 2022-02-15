@@ -147,6 +147,36 @@ app.post('/fetching_data_user',(req,res)=>{
     })
 })
 
+app.post('/block_user',(req,res)=>{
+    User.updateOne({Email:req.body.email},{"$pull":{"followers":{"email":req.body.user_email}}},{safe:true},(err,result)=>{
+        if(result.modifiedCount!=0){
+            res.json({
+                msg:'success'
+            });
+        }
+        else{
+            res.json({
+                msg:'fail'
+            });
+        }
+    })
+})
+
+app.post('/unfollow_user',(req,res)=>{
+    User.updateOne({Email:req.body.email},{"$pull":{"following":{"email":req.body.user_email}}},{safe:true},(err,result)=>{
+        if(result.modifiedCount!=0){
+            res.json({
+                msg:'success'
+            });
+        }
+        else{
+            res.json({
+                msg:'fail'
+            });
+        }
+    })
+})
+
 app.post('/insert', (req, res) => {
     console.log("insert data................................")
 
