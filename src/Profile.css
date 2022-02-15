@@ -8,18 +8,17 @@
 .follower {
     justify-content: center !important;
     width: 60% !important;
-    background-color: #E16D54 !important;
-    color: white !important;
     border-radius: 0.2em !important;
-    text-align: right !important;
 }
 
 .following {
     justify-content: center !important;
-    background-color: #9740c0 !important;
     margin-top: 1em !important;
-    border-radius: 0.2em !important;
     width: 60% !important;
+}
+
+.following Button {
+    color: white !important;
 }
 
 .comments {

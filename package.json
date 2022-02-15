@@ -12,6 +12,7 @@
         "@mui/icons-material": "^5.0.1",
         "@mui/lab": "^5.0.0-alpha.68",
         "@mui/material": "^5.4.1",
+        "@mui/styles": "^5.4.1",
         "@react-spring/web": "^9.4.2",
         "@testing-library/jest-dom": "^5.14.1",
         "@testing-library/react": "^11.2.7",

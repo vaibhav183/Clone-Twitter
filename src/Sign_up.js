@@ -12,6 +12,12 @@ import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
+import OutlinedInput from '@mui/material/OutlinedInput';
+import InputAdornment from '@mui/material/InputAdornment';
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import InputLabel from '@mui/material/InputLabel';
+import FormControl from '@mui/material/FormControl';
 import Linked from '@mui/material/Link';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
@@ -100,6 +106,12 @@ export default function SignUp() {
     }
   }
 
+  //Show Password
+  const [showPassword,setShowPassword]=React.useState(false);
+    const handleClickShowPassword = () => {
+      setShowPassword(!showPassword);
+    };
+
   //ALL USE STATE
   const [registered,setRegistered]=useState(false)
   const [fname, setFname] = useState('')
@@ -123,7 +135,7 @@ export default function SignUp() {
     else{
       $('#check_grid').addClass("hide_grid");
       $('#verifying').removeClass("hide_grid");
-      Axios.post("http://localhost:3001/otp_verification",{email:$('#email').val(),otp:$('#otp').val()})
+      Axios.post("https://clone-twitter-by-vaibhav.herokuapp.com/otp_verification",{email:$('#email').val(),otp:$('#otp').val()})
       .then((response)=>{
           if (response.data.msg === 'success'){
             setEmail_verified(true);
@@ -156,7 +168,7 @@ export default function SignUp() {
     else{
       $('#verify_grid').addClass("hide_grid");
       $('#verifying').removeClass("hide_grid");
-      Axios.post("http://localhost:3001/email_verification",{tomail:$('#email').val()})
+      Axios.post("https://clone-twitter-by-vaibhav.herokuapp.com/email_verification",{tomail:$('#email').val()})
       .then((response)=>{
         if(response.data.msg === 'found'){
           $('#verify_grid').removeClass("hide_grid");
@@ -209,7 +221,7 @@ export default function SignUp() {
        formData.append('upload_preset','postimage' )
        Axios.post("https://api.cloudinary.com/v1_1/vaibhav183vibhu/image/upload",formData)
        .then(async function (response){
-        Axios.post("http://localhost:3001/user_signup",{fname:$('#firstName').val(),lname:$('#lastName').val(),email:$('#email').val(),pass:$('#password').val(),img:response.data.secure_url})
+        Axios.post("https://clone-twitter-by-vaibhav.herokuapp.com/user_signup",{fname:$('#firstName').val(),lname:$('#lastName').val(),email:$('#email').val(),pass:$('#password').val(),img:response.data.secure_url})
         .then((response)=>{
           if (response.data.msg === 'success'){
             localStorage.setItem('token',(response.data.token));
@@ -236,7 +248,7 @@ export default function SignUp() {
        })
       }
       else{
-        Axios.post("http://localhost:3001/user_signup",{fname:$('#firstName').val(),lname:$('#lastName').val(),email:$('#email').val(),pass:$('#password').val(),img:""})
+        Axios.post("https://clone-twitter-by-vaibhav.herokuapp.com/user_signup",{fname:$('#firstName').val(),lname:$('#lastName').val(),email:$('#email').val(),pass:$('#password').val(),img:""})
         .then((response)=>{
           if (response.data.msg === 'success'){
             dispatch(setTokenNumber(response.data.token))
@@ -385,19 +397,29 @@ export default function SignUp() {
               </Grid>
 
               {/* Password */}
-              <Grid item xs={12}>
-                <TextField
-                  required
-                  fullWidth
-                  name="password"
-                  label="Password"
-                  type="password"
-                  id="password"
-                  autoComplete="new-password"
-                  onChange={(e) => validate(e.target.value)}
-                  helperText={errorMessage}
+              <FormControl sx={{ mt: 2,ml:2 }} fullWidth variant="outlined">
+                <InputLabel color="secondary">Enter Password</InputLabel>
+                <OutlinedInput
+                type={showPassword ? 'text' : 'password'}
+                onChange={(e) => validate(e.target.value)}
+                id="password"
+                  endAdornment={
+                    <InputAdornment position="end">
+                      <IconButton
+                        aria-label="toggle password visibility"
+                        onClick={handleClickShowPassword}
+                        edge="end"
+                      >
+                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                      </IconButton>
+                    </InputAdornment>
+                  }
+                  label="Enter Password"
                 />
-              </Grid>
+                <p style={{margin:'0.6em 0 0 0.6em',fontSize:'0.8em'}}>{errorMessage}</p>
+              </FormControl>
+
+              
               <Grid item xs={12}>
                 <Button
                   variant={variant}

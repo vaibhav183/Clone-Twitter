@@ -9,7 +9,7 @@ import "./Post.css"
 
 function Post({display_pic,Name,Username,verified,text,post_data,post_url}) {
     return (
-        <div className="post">
+        <div className="post" style={{whiteSpace: 'pre-line'}}>
                 <div className="post_header">
                     <div className="post_headertext">
                     <div className="post_avatar">
@@ -24,7 +24,7 @@ function Post({display_pic,Name,Username,verified,text,post_data,post_url}) {
                     </div>
                     
                 </div>
-                <p>{text}</p>
+                <pre style={{fontSize: 'inherit',color: 'inherit',border: 'initial',padding: 'initial',fontFamily: 'inherit',whiteSpace:'pre-wrap'}}>{text}</pre>
                 {post_data && <img className="post_data" src={post_data} alt=""/>}
                 {post_data && <br/>}
                 {post_url && <img className="post_data" src={post_url} alt=""/>}

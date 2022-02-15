@@ -16,3 +16,24 @@ export const setTokenNumber1 = (value) => {
         token: value,
     }
 }
+export const filling = (value) => {
+    return {
+        type: "filled",
+        data:{
+            name:value.name,
+            username:value.username,
+            email:value.email,
+            verified:value.verified,
+            imgurl:value.imgurl,
+            followers:value.followers,
+            following:value.following,
+            posts:value.posts,
+            comments:value.comments,
+        }
+    }
+}
+export const clear = () => {
+    return {
+        type: "clear",
+    }
+}

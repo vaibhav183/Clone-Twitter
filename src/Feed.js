@@ -9,9 +9,10 @@ import Axios from 'axios'
 import Post from "./Post"
 import FormData from 'form-data';
 import {useSelector,useDispatch} from "react-redux"
-import axios from 'axios';
+import {filling,clear} from "./actions/index";
 // import {Image} from 'cloudinary-react'
 
+//Profile Photo short Name
 function stringToColor(string) {
     let hash = 0;
     let i;
@@ -36,6 +37,8 @@ function stringToColor(string) {
 function Feed() {
     const myState=useSelector((state)=>state.changeToken)
     const myState1=useSelector((state)=>state.changeToken1)
+    const user_data=useSelector((state)=>state.changeUserData)
+    const dispatch=useDispatch()
     const [dataPost,setDataPost]=useState(null)
     const [error_data,setError_data]=useState("")
     const [dbdata,setDbdata] = useState([]);
@@ -161,30 +164,12 @@ function Feed() {
     setPosts({...posts,post_url:e.target.value})
    }
 
-   //Authentication Checking
-   const [user_data, setUser_data] = useState({
-        name:"",
-        username:"",
-        email:"",
-        comments:[],
-        verified:false,
-        imgurl:"",
-        followers:0,
-        following:0
-    });
    useEffect(() => {
-    Axios.post("http://localhost:3001/fetching_data_user",{token:myState,token1:myState1})
+    Axios.post("https://clone-twitter-by-vaibhav.herokuapp.com/fetching_data_user",{token:myState,token1:myState1})
     .then((response)=>{
         if(response.data.msg=='success'){
-            setUser_data({...user_data,
-                name:response.data.name,
-                email:response.data.email,
-                comments:response.data.comments,
-                verified:response.data.verified,
-                imgurl:response.data.imgurl,
-                followers:response.data.followers,
-                following:response.data.following
-            })
+            console.log(response.data.posts)
+            dispatch(filling(response.data))
         }
     })
     .catch((err)=>{

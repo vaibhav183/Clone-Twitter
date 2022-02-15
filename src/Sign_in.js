@@ -8,7 +8,6 @@ import Button from '@mui/material/Button';
 import LoadingButton from '@mui/lab/LoadingButton';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
-import Linked from '@mui/material/Link';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
@@ -17,7 +16,14 @@ import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import SaveIcon from '@mui/icons-material/Save';
 import Backdrop from '@mui/material/Backdrop';
+import InputLabel from '@mui/material/InputLabel';
+import FormControl from '@mui/material/FormControl';
 import Dialog from '@mui/material/Dialog';
+import OutlinedInput from '@mui/material/OutlinedInput';
+import InputAdornment from '@mui/material/InputAdornment';
+import IconButton from '@mui/material/IconButton';
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
@@ -50,7 +56,16 @@ export default function SignIn() {
         setOpen(false);
         setMsg("")
     };
+
+    //Show Password
+    const [showPassword,setShowPassword]=React.useState(false);
+    const handleClickShowPassword = () => {
+      setShowPassword(!showPassword);
+    };
+
+    //Sign in
     const handleSubmit=(e)=>{
+      setPassmsg("")
       if(($('#email').val())=="")
         setLoginmsg(blank())
       else if(isEmail($('#email').val())==false){
@@ -61,7 +76,7 @@ export default function SignIn() {
       else{
         $('#signin').addClass('loading');
         $('#signing').removeClass('loading');
-        Axios.post("http://localhost:3001/user_signin",{email:($('#email').val()),pass:($('#password').val())})
+        Axios.post("https://clone-twitter-by-vaibhav.herokuapp.com/user_signin",{email:($('#email').val()),pass:($('#password').val())})
         .then((response)=>{
           if(response.data.msg=='success'){
             localStorage.setItem('token',(response.data.token));
@@ -118,7 +133,7 @@ export default function SignIn() {
       else{
         $('#otpButton').addClass('loading');
         $('#loadingButton').removeClass('loading');
-        Axios.post("http://localhost:3001/otp_verification",{email:$('#verifyEmail').val(),otp:$('#verificationOtp').val()})
+        Axios.post("https://clone-twitter-by-vaibhav.herokuapp.com/otp_verification",{email:$('#verifyEmail').val(),otp:$('#verificationOtp').val()})
         .then((response)=>{
             if (response.data.msg === 'success'){
               $('#loadingButton').addClass('loading');
@@ -154,7 +169,7 @@ export default function SignIn() {
       else{
         $('#sendButton').addClass('loading');
         $('#loadingButton').removeClass('loading');
-      Axios.post("http://localhost:3001/forgot_password_email",{tomail:$('#verifyEmail').val()})
+      Axios.post("https://clone-twitter-by-vaibhav.herokuapp.com/forgot_password_email",{tomail:$('#verifyEmail').val()})
       .then((response)=>{
         if (response.data.msg === 'success'){
             $('#email1st').addClass("hideit");
@@ -186,7 +201,7 @@ export default function SignIn() {
         setMatch(notMatch())
       }
       else{
-        Axios.post("http://localhost:3001/password_change",{tomail:$('#verifyEmail').val(),newpass:$('#new1').val()})
+        Axios.post("https://clone-twitter-by-vaibhav.herokuapp.com/password_change",{tomail:$('#verifyEmail').val(),newpass:$('#new1').val()})
         .then((response)=>{
           if (response.data.msg === 'success'){
             alert("Password Change Successfully")
@@ -230,7 +245,7 @@ export default function SignIn() {
           <Typography component="h1" variant="h5">
             Sign in
           </Typography>
-          <Box component="form" onClick={handleSubmit} validate sx={{ mt: 1 }}>
+          <Box component="form" validate sx={{ mt: 1 }}>
             <TextField
               margin="normal"
               required
@@ -243,20 +258,31 @@ export default function SignIn() {
               onChange={(e)=>free(e)}
               helperText={loginmsg}
             />
-            <TextField
-              margin="normal"
-              required
-              fullWidth
-              name="password"
-              label="Password"
-              type="password"
-              id="password"
+            <FormControl sx={{ mt: 1}} fullWidth variant="outlined">
+              <InputLabel color="secondary">Enter Password</InputLabel>
+              <OutlinedInput
+              type={showPassword ? 'text' : 'password'}
               onChange={(e) => free(e)}
-              autoComplete="current-password"
-              helperText={passmsg}
-            />
+              id="password"
+                endAdornment={
+                  <InputAdornment position="end">
+                    <IconButton
+                      aria-label="toggle password visibility"
+                      onClick={handleClickShowPassword}
+                      edge="end"
+                    >
+                      {showPassword ? <VisibilityOff /> : <Visibility />}
+                    </IconButton>
+                  </InputAdornment>
+                }
+                label="Enter Password"
+              />
+              <p style={{margin:'0.6em 0 0 0.6em',fontSize:'0.8em'}}>{passmsg}</p>
+            </FormControl>
+
             <Button
               fullWidth
+              onClick={handleSubmit}
               id="signin"
               variant="contained"
               sx={{ mt: 3, mb: 2 }}
