@@ -5,8 +5,6 @@ const app = express();
 const bcrypt = require("bcrypt")
 var bodyParser = require('body-parser');
 const mongoose = require('mongoose');
-const fileUpload = require('express-fileupload'); // file upload
-app.use(fileUpload());
 const cors = require('cors') // It is used to connection between two servers
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(express.static("Public"))
