@@ -9,7 +9,7 @@ import Axios from 'axios'
 import Post from "./Post"
 import FormData from 'form-data';
 import {useSelector,useDispatch} from "react-redux"
-import {filling,clear} from "./actions/index";
+import {filling,clear, setNull} from "./actions/index";
 // import {Image} from 'cloudinary-react'
 
 //Profile Photo short Name
@@ -170,6 +170,9 @@ function Feed() {
         if(response.data.msg=='success'){
             console.log(response.data.posts)
             dispatch(filling(response.data))
+        }
+        else{
+            dispatch(setNull())
         }
     })
     .catch((err)=>{

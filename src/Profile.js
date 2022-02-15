@@ -20,6 +20,7 @@ import Grid from '@mui/material/Grid';
 import Avatar from '@mui/material/Avatar';
 import VerifiedIcon from '@mui/icons-material/Verified';
 import {useSelector,useDispatch} from "react-redux"
+import {filling,clear, setNull,follower_change,following_change} from "./actions/index";
 import axios from 'axios'
 
 const Item = styled(Paper)(({ theme }) => ({
@@ -102,15 +103,12 @@ export default function SimpleContainer() {
   const myState=useSelector((state)=>state.changeToken)
   const myState1=useSelector((state)=>state.changeToken1)
   const user_data=useSelector((state)=>state.changeUserData)
+  const dispatch = useDispatch()
 
   const [bfollower,setBfollower]=useState(false)
   const [bfollowing,setBfollowing]=useState(false)
   const [bposts,setBposts]=useState(false)
   const [bcomments,setBcomments]=useState(true)
-
-  const [open, setOpen] = useState(false);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
 
   const handleClick=(e)=>{
     switch(e.target.id){
@@ -145,15 +143,48 @@ export default function SimpleContainer() {
         setBcomments(true);
     }
   }
+
+  const [open, setOpen] = useState(false);
+  const [fopen, setFopen] = useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+  const fhandleClose = ()=> setFopen(false)
+  const fhandleOpen = () => setFopen(true)
+
   const block=(e)=>{
-    console.log(e.target.id)
-    // axios.post('http://localhost:3001/block_user',{email:user_data.email})
-    // .then((res)=>{
-    //   console.log("deleted")
-    // })
-    // .catch((err)=>{
-    //   console.log("Error")
-    // })
+    axios.post('http://localhost:3001/block_user',{email:user_data.email,user_email:(e.target.id)})
+    .then((res)=>{
+      if(res.data.msg=='success'){
+        dispatch(follower_change(e.target.id));
+        setOpen(false);
+      }
+      else{
+        setOpen(false);
+        alert("Some Error Occured!! Please try again...");
+      }
+    })
+    .catch((err)=>{
+      setOpen(false)
+      alert("Some Error Occured!! Please try again...");
+    })
+  }
+
+  const unfollow=(e)=>{
+    axios.post('http://localhost:3001/unfollow_user',{email:user_data.email,user_email:(e.target.id)})
+    .then((res)=>{
+      if(res.data.msg=='success'){
+        dispatch(following_change(e.target.id));
+        setFopen(false);
+      }
+      else{
+        setFopen(false);
+        alert("Some Error Occured!! Please try again...");
+      }
+    })
+    .catch((err)=>{
+      setFopen(false)
+      alert("Some Error Occured!! Please try again...");
+    })
   }
 
   if(myState!=null && myState1!=null){
@@ -259,7 +290,24 @@ export default function SimpleContainer() {
                       </React.Fragment>
                     }
                   />
-                  <Button variant="contained" style={{float:'right',marginRight:'-4em'}}>Unfollow</Button>
+                  <Button variant="contained" style={{float:'right',marginRight:'-4em'}} onClick={fhandleOpen}>Unfollow</Button>
+                  <Modal
+                    open={fopen}
+                    onClose={fhandleClose}
+                    aria-labelledby="modal-modal-title"
+                    aria-describedby="modal-modal-description"
+                  >
+                    <Box sx={style}>
+                      <Typography id="modal-modal-title" variant="h6" component="h2" style={{textAlign:'center'}}>
+                        Unfollow To User<hr/>
+                      </Typography>
+                      <Typography id="modal-modal-description" sx={{ mt: 2 }}>
+                        Do you want to <b>Unfollow</b> this user?
+                      </Typography>
+                      <Button variant="contained" color="inherit" style={{marginTop:'2em'}} onClick={fhandleClose}>Dismiss</Button>
+                      <Button variant="contained" color="error"  id={item.email} style={{marginTop:'2em',float:'right'}} onClick={unfollow}>Yes</Button>
+                    </Box>
+                  </Modal>
                   <Divider variant="inset" component="li" />
                 </ListItem>
               ))}

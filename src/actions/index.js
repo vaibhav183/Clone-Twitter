@@ -32,6 +32,19 @@ export const filling = (value) => {
         }
     }
 }
+export const follower_change =(value)=>{
+    return {
+        type:"follower_change",
+        data:value
+    }
+}
+
+export const following_change =(value)=>{
+    return {
+        type:"following_change",
+        data:value
+    }
+}
 export const clear = () => {
     return {
         type: "clear",
