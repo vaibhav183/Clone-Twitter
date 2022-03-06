@@ -64,6 +64,16 @@ function error_occur(){
     <span style={{color:'red',marginTop:'0px',marginBottom:'1px',fontWeight:600,fontSize:"1.3em"}}>Some Error Occured! Try Again</span>
     );
 }
+function user_error(){
+    return(
+    <span style={{color:'red',marginTop:'0px',marginBottom:'1px',fontWeight:600,fontSize:"1.3em"}}>This username already exist...</span>
+    );
+}
+function name_error(){
+    return(
+    <span style={{color:'red',marginTop:'0px',marginBottom:'1px',fontWeight:600,fontSize:"1.3em"}}>Enter a name</span>
+    );
+}
 function already(){
     return(
     <span style={{color:'red',marginTop:'0px',marginBottom:'1px',fontWeight:600,fontSize:"1.3em"}}>Email Already Exist!!</span>
@@ -90,4 +100,4 @@ function success(){
     );
 }
 
-export {firname,lasname,blank,otpBlank,passblank,detail_wrong,notMatch,otpCheck,notStrong,strong,muchStrong,wrong,check,error_occur,already,verify,verifyOtp,success};
+export {firname,lasname,blank,otpBlank,passblank,name_error,detail_wrong,user_error,notMatch,otpCheck,notStrong,strong,muchStrong,wrong,check,error_occur,already,verify,verifyOtp,success};

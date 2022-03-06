@@ -12,14 +12,21 @@ import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
 import { styled } from '@mui/material/styles';
 import Button from '@mui/material/Button';
+import SaveIcon from '@mui/icons-material/Save';
 import PropTypes from 'prop-types';
+import TextField from '@mui/material/TextField';
+import IconButton from '@mui/material/IconButton';
+import PhotoCamera from '@mui/icons-material/PhotoCamera';
+import LoadingButton from '@mui/lab/LoadingButton';
 import { makeStyles } from '@mui/styles';
-import {Redirect} from 'react-router-dom'
+import {Link,Redirect} from 'react-router-dom'
 import Paper from '@mui/material/Paper';
 import Grid from '@mui/material/Grid';
 import Avatar from '@mui/material/Avatar';
 import VerifiedIcon from '@mui/icons-material/Verified';
 import {useSelector,useDispatch} from "react-redux"
+import { user_error,name_error } from './error';
+import CreateIcon from '@mui/icons-material/Create';
 import {filling,clear, setNull,follower_change,following_change} from "./actions/index";
 import axios from 'axios'
 
@@ -98,6 +105,12 @@ function stringAvatar(name) {
   };
 }
 
+const SmallAvatar = styled(Avatar)(({ theme }) => ({
+  width: 22,
+  height: 22,
+  border: `2px solid ${theme.palette.background.paper}`,
+}));
+
 export default function SimpleContainer() {
 
   const myState=useSelector((state)=>state.changeToken)
@@ -109,6 +122,8 @@ export default function SimpleContainer() {
   const [bfollowing,setBfollowing]=useState(false)
   const [bposts,setBposts]=useState(false)
   const [bcomments,setBcomments]=useState(true)
+  const [update,setUpdate]=useState(false)
+  const [photo_upload,setPhoto_upload]=useState("Upload Photo")
 
   const handleClick=(e)=>{
     switch(e.target.id){
@@ -117,24 +132,35 @@ export default function SimpleContainer() {
         setBfollowing(false)
         setBposts(false);
         setBcomments(false);
+        setUpdate(false)
         break;
       case "following":
         setBfollower(false);
         setBfollowing(true)
         setBposts(false);
         setBcomments(false);
+        setUpdate(false)
         break;
       case "posts":
         setBfollower(false);
         setBfollowing(false)
         setBposts(true);
         setBcomments(false);
+        setUpdate(false)
         break;
       case "comments":
         setBfollower(false);
         setBfollowing(false)
         setBposts(false);
         setBcomments(true);
+        setUpdate(false)
+        break;
+      case "update":
+        setBfollower(false);
+        setBfollowing(false)
+        setBposts(false);
+        setBcomments(false);
+        setUpdate(true)
         break;
       default:
         setBfollower(false);
@@ -208,6 +234,9 @@ export default function SimpleContainer() {
               </Badge>
               <Badge className="following" badgeContent={user_data.comments.length} color="info">
               <MyButton color="violet" id="comments" onClick={(e)=>handleClick(e)}>Comments</MyButton>
+              </Badge>
+              <Badge className="update_profile">
+              <MyButton color="violet" id="update" onClick={(e)=>handleClick(e)}>Update Profile</MyButton>
               </Badge>
               </div>
           </Item>
@@ -368,6 +397,116 @@ export default function SimpleContainer() {
                   </Paper>
               ))}
             </div>}
+
+            {/* Update Profile */}
+            {update && <div className="comments">
+            <h1 style={{textAlign:'center',marginTop:'0em'}}>Update Profile</h1>
+                  {/* <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
+                    <LockOutlinedIcon />
+                  </Avatar> */}
+                  {/* <Typography component="h1" variant="h5">
+                    Sign up
+                  </Typography> */}
+                  <Box component="form" noValidate sx={{ mt: 3 }}>
+                  <Button component="label">
+                  <Badge
+                    overlap="circular"
+                    anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                    badgeContent={
+                      <CreateIcon />
+                    }
+                  >
+                  <Avatar {...stringAvatar(user_data.name)} src={user_data.imgurl} style={{width:'7em',height:'7em',opacity:'0.7'}} />
+                  </Badge>
+                  <input
+                    type="file"
+                    hidden
+                  />
+                  </Button>
+                    <Grid container spacing={2}>
+                      <Grid item xs={12} sm={6}>
+                        <TextField
+                          autoComplete="name"
+                          name="name"
+                          required
+                          fullWidth
+                          id="name"
+                          label="Name"
+                          value={user_data.name}
+                          autoFocus
+                          helperText={name_error}
+                        />
+                      </Grid>
+
+                      <Grid item xs={10} id='email_grid'>
+                        <TextField
+                          required
+                          fullWidth
+                          id="username"
+                          label="Username"
+                          name="username"
+                          value={user_data.username}
+                          autoComplete="username"
+                          helperText={user_error}
+                        />
+                      </Grid>
+                      
+                      <Grid item xs={10}>
+                        <Button
+                          variant="outlined"
+                          component="label"
+                          endIcon={<PhotoCamera />}
+                        >
+                          {photo_upload}
+                          <input
+                            type="file"
+                            // onChange={(e) => upload(e)}
+                            hidden
+                          />
+                        </Button>
+                      </Grid>
+
+                    </Grid>
+                    <Button
+                      type="submit"
+                      fullWidth
+                      id="signUp"
+                      variant="contained"
+                      sx={{ mt: 3, mb: 2 }}
+                    >
+                      Sign Up
+                    </Button>
+
+                    {/* Signing Up */}
+                    <LoadingButton
+                      loading
+                      className="hide_grid"
+                      id="signingUp"
+                      fullWidth
+                      loadingPosition="start"
+                      startIcon={<SaveIcon />}
+                      sx={{ mt: 3, mb: 2,bgcolor:'#bd00fc' }}
+                      variant="contained"
+                    >
+                      Signing up...
+                    </LoadingButton>
+
+
+                    <Link to="/sign_in" style={{textDecoration:"none"}}>
+                    <Button fullWidth variant="text" style={{bgcolor:"red"}}>Already have an account? Sign in</Button>
+                    </Link>
+                    <Link to="/" style={{textDecoration:"none"}}>
+                    <Button fullWidth sx={{ mt: 2, mb: 5 }} variant="text">Home Page</Button>
+                    </Link>
+                    {/* <Grid justifyContent="center">
+                        <Link to="/sign_in">
+                        <Linked href="#" variant="body2">
+                          Already have an account? Sign in
+                        </Linked>
+                        </Link>
+                    </Grid> */}
+                  </Box>
+              </div>}
         </Grid>
       </Grid>
       </Container>
