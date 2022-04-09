@@ -139,6 +139,7 @@ export default function SimpleContainer() {
   const [name_err,setName_err]=useState("")
   const [user_err,setUser_err]=useState("")
   const [updated,setUpdated]=useState(false)
+  const [blockChange, setBlockChange] = useState(true);
 
   //Photo Upload
   function upload(value){
@@ -166,7 +167,7 @@ export default function SimpleContainer() {
     .catch((err)=>{
         console.log(err)
     })
-    },[user_data,myState1,myState]);
+    },[blockChange,myState1,myState]);
 
   const handleClick=(e)=>{
     switch(e.target.id){
@@ -222,11 +223,12 @@ export default function SimpleContainer() {
 
   // Block User
   const block=(e)=>{
-    axios.post('https://clone-twitter-by-vaibhav.herokuapp.com/block_user',{email:user_data.email,user_email:(e.target.id)})
+    console.log(e.target.id.split('*')[0],e.target.id.split('*')[1])
+    axios.post('https://clone-twitter-by-vaibhav.herokuapp.com/block_user',{email:user_data.email,user_email:e.target.id.split('*')[1],block_status:(e.target.id.split('*')[0]=="true"?true:false)})
     .then((res)=>{
       if(res.data.msg=='success'){
-        dispatch(follower_change(e.target.id));
         setOpen(false);
+        setBlockChange(!block)
       }
       else{
         setOpen(false);
@@ -275,8 +277,8 @@ export default function SimpleContainer() {
     else{
       setName_err("");
       setUser_err("");
-      $('#updating').removeClass("hide_grid")
-      $('#update').addClass("hide_grid");
+      $('#updating_but').removeClass("hide_grid")
+      $('#update_but').addClass("hide_grid");
       Axios.post("https://clone-twitter-by-vaibhav.herokuapp.com/username_checking",{username:$('#username').val()})
       .then((res)=>{
         if(res.data.msg=='success'){
@@ -297,30 +299,30 @@ export default function SimpleContainer() {
                       else{
                           dispatch(setNull())
                       }
-                      $('#updating').addClass("hide_grid");
-                      $('#update').removeClass("hide_grid");
+                      $('#updating_but').addClass("hide_grid");
+                      $('#update_but').removeClass("hide_grid");
                   })
                   .catch((err)=>{
                     alert("Some Error Occured")
-                    $('#updating').addClass("hide_grid");
-                    $('#update').removeClass("hide_grid");
+                    $('#updating_but').addClass("hide_grid");
+                    $('#update_but').removeClass("hide_grid");
                   })
                 }else if(response.data.msg === 'fail'){
                   alert("Some Error Occured")
-                  $('#updating').addClass("hide_grid");
-                  $('#update').removeClass("hide_grid");
+                  $('#updating_but').addClass("hide_grid");
+                  $('#update_but').removeClass("hide_grid");
                 }
               })
               .catch((error)=>{
                 alert("Ooh!! something went wrong")
-                $('#updating').addClass("hide_grid");
-                  $('#update').removeClass("hide_grid");
+                $('#updating_but').addClass("hide_grid");
+                  $('#update_but').removeClass("hide_grid");
               })
              })
              .catch((error)=>{
                alert("Ooh!! something went wrong")
-               $('#updating').addClass("hide_grid");
-                  $('#update').removeClass("hide_grid");
+               $('#updating_but').addClass("hide_grid");
+                  $('#update_but').removeClass("hide_grid");
              })
             }
             else{
@@ -337,42 +339,42 @@ export default function SimpleContainer() {
                         alert("Couldn't update due to technical problem")
                           dispatch(setNull())
                       }
-                      $('#updating').addClass("hide_grid");
-                      $('#update').removeClass("hide_grid");
+                      $('#updating_but').addClass("hide_grid");
+                      $('#update_but').removeClass("hide_grid");
                   })
                   .catch((err)=>{
                     alert("Some Error Occured")
-                    $('#updating').addClass("hide_grid");
-                    $('#update').removeClass("hide_grid");
+                    $('#updating_but').addClass("hide_grid");
+                    $('#update_but').removeClass("hide_grid");
                   })
                 }else if(response.data.msg === 'fail'){
                   alert("Some Error Occured")
-                  $('#updating').addClass("hide_grid");
-                    $('#update').removeClass("hide_grid");
+                  $('#updating_but').addClass("hide_grid");
+                    $('#update_but').removeClass("hide_grid");
                 }
                 else{
                   alert("Some Error Occured. Check your internet Connection")
-                  $('#updating').addClass("hide_grid");
-                    $('#update').removeClass("hide_grid");
+                  $('#updating_but').addClass("hide_grid");
+                    $('#update_but').removeClass("hide_grid");
                 }
               })
               .catch((error)=>{
                 alert("Ooh!! Something went wrong")
-                $('#updating').addClass("hide_grid");
-                    $('#update').removeClass("hide_grid");
+                $('#updating_but').addClass("hide_grid");
+                    $('#update_but').removeClass("hide_grid");
               })
             }
         }
         else{
           alert("Ooh!! Something went wrong")
-                $('#updating').addClass("hide_grid");
-                    $('#update').removeClass("hide_grid");
+                $('#updating_but').addClass("hide_grid");
+                    $('#update_but').removeClass("hide_grid");
         }
       })
       .catch((err)=>{
         alert("Ooh!! Something went wrong")
-                $('#updating').addClass("hide_grid");
-                    $('#update').removeClass("hide_grid");
+                $('#updating_but').addClass("hide_grid");
+                    $('#update_but').removeClass("hide_grid");
       })
     }
   }
@@ -442,7 +444,8 @@ export default function SimpleContainer() {
                   </React.Fragment>
                 }
               />
-              <Button variant="contained" style={{float:'right',marginRight:'-4em'}} onClick={handleOpen}>Block</Button>
+              {!item.block && <Button variant="contained" style={{float:'right',marginRight:'-4em'}} onClick={handleOpen}>Block</Button>}
+              {item.block && <Button variant="contained" style={{float:'right',marginRight:'-4em'}} onClick={handleOpen}>Unblock</Button>}
               <Modal
                 open={open}
                 onClose={handleClose}
@@ -451,13 +454,13 @@ export default function SimpleContainer() {
               >
                 <Box sx={style}>
                   <Typography id="modal-modal-title" variant="h6" component="h2" style={{textAlign:'center'}}>
-                    Block To User<hr/>
+                  {item.block==false?"Block":"Unblock"} To User<hr/>
                   </Typography>
                   <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                    Do you want to <b>block</b> this user?
+                    Do you want to <b>{item.block==false?"Block":"Unblock"}</b> this user?
                   </Typography>
                   <Button variant="contained" color="inherit" style={{marginTop:'2em'}} onClick={handleClose}>Dismiss</Button>
-                  <Button variant="contained" color="error"  id={item.email} style={{marginTop:'2em',float:'right'}} onClick={block}>Yes</Button>
+                  <Button variant="contained" color="error"  id={item.block==true?`true*${item.email}`:`false*${item.email}`} style={{marginTop:'2em',float:'right'}} onClick={block}>Yes</Button>
                 </Box>
               </Modal>
               <Divider variant="inset" component="li" />
@@ -570,7 +573,7 @@ export default function SimpleContainer() {
               ))}
             </div>}
 
-            {/* Update Profile aaa */ }
+            {/* Update Profile */ }
             {update && <div className="comments">
             <h1 style={{textAlign:'center',marginTop:'0em'}}>Update Profile</h1>
                   <Box component="form" noValidate onSubmit={submitForm}  sx={{ mt: 3, marginLeft:'auto',marginRight:'auto',backgroundImage:'linear-gradient(315deg, #EDE574 0%, #E1F5C4 74%)'}}>
@@ -625,7 +628,7 @@ export default function SimpleContainer() {
                     </Grid>
                     <Button
                       type="submit"
-                      id="update"
+                      id="update_but"
                       variant="contained"
                       sx={{ mt: 3, mb: 2 }}
                       style={{width:"60%",marginLeft:'20%',marginBottom:"40%"}}
@@ -633,14 +636,14 @@ export default function SimpleContainer() {
                       Update Profile
                     </Button>
 
-                    {/* Updating */}
+                    {/* Updating aaa*/}
                     <LoadingButton
-                      loading
+                      loading="true"
                       className="hide_grid"
-                      id="updating"
+                      id="updating_but"
                       fullWidth
-                      loadingPosition="start"
-                      startIcon={<SaveIcon />}
+                      loadingPosition="end"
+                      endIcon={<SaveIcon />}
                       sx={{ mt: 3, mb: 2,bgcolor:'#bd00fc' }}
                       style={{width:"60%",marginLeft:'20%',marginBottom:"40%"}}
                       variant="contained"

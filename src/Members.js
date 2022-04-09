@@ -5,6 +5,7 @@ import $ from 'jquery';
 import "./Members.css"
 import {useSelector,useDispatch} from "react-redux"
 import List from '@mui/material/List';
+import ResponsiveAppBar from './navbar'
 import ListItem from '@mui/material/ListItem';
 import ListItemAvatar from '@mui/material/ListItemAvatar'
 import Avatar from '@mui/material/Avatar';
@@ -116,10 +117,13 @@ export default function Twitter_member(){
         $(`#${chk}${chk}${chk}`).addClass("hide_grid")
       })
     }
-
+    if(myState==null || myState1==null){
+        return <Redirect to="/" />
+    }
+    else{
     return ( 
         <List sx={{marginLeft:'auto',marginRight:'auto',width:"50%", bgcolor: 'background.paper' }}>
-                     <h1 style={{textAlign:'center',marginTop:'0em'}}>Suggestion to follow</h1>
+                    {user_data && <ResponsiveAppBar image={user_data.imgurl} name={user_data.name} />}
                      {suggest && user_data && (suggest).map((item)=>(
                         <ListItem alignItems="center" style={{backgroundImage:'linear-gradient(315deg, #FF8008 0%, #FFC837 74%)',borderRadius:'0.4em',marginBottom:'0.8em'}}>
                           <ListItemAvatar>
@@ -164,4 +168,5 @@ export default function Twitter_member(){
                       {!suggest && <CircularProgress style={{width:"4em",height:"4em",marginLeft:"40%"}} color="success" />}
                         </List>
     )
+}
 }

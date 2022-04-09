@@ -22,7 +22,7 @@ if(myState!=null && myState1!=null){
     <div className = "sidebar" >
         <TwitterIcon className="twitter-icon"/>
         <Sidebaroption active text="Home" Icon={HomeIcon} rou_val="Home"/>
-        <Sidebaroption text="Twitter Members" Icon={MailOutlineIcon} rou_val="Members"/>
+        <Sidebaroption text="Suggestions" Icon={MailOutlineIcon} rou_val="Members"/>
         <Sidebaroption text="Sign Out" Icon={LockOpenIcon} rou_val="signout"/>
         <Sidebaroption text="Profile" Icon={PermIdentityIcon} rou_val="profile"/>
         <Sidebaroption text="Reviews" Icon={ReviewsIcon} rou_val="reviews"/>
