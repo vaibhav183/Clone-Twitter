@@ -168,7 +168,7 @@ export default function SignUp() {
     else{
       $('#verify_grid').addClass("hide_grid");
       $('#verifying').removeClass("hide_grid");
-      Axios.post("http://localhost:3001/email_verification",{tomail:$('#email').val()})
+      Axios.post("https://clone-twitter-by-vaibhav.herokuapp.com/email_verification",{tomail:$('#email').val()})
       .then((response)=>{
         console.log(response)
         if(response.data.msg === 'found'){
