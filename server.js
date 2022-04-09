@@ -18,6 +18,7 @@ app.use(function(req, res, next) {
     next();
 });
 app.use(express.json());
+
 app.use(cors());
 const url = "mongodb+srv://vaibhav183:Jobportal$9999@cluster0.zksak.mongodb.net/twitter_clone";
 mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true });
@@ -51,6 +52,7 @@ const User_Data = new mongoose.Schema({
     verified:Boolean,
     followers:[Object],
     following:[Object],
+    total_following:[String],
     posts:[Object],
     comments:[Object],
     token:String
@@ -177,6 +179,152 @@ app.post('/unfollow_user',(req,res)=>{
     })
 })
 
+app.post('/follow_user',(req,res)=>{
+    User.findOne({Email:req.body.user_email},(err,result)=>{
+        User.updateOne({Email:req.body.email},{"$push":{"following":{"email":req.body.user_email,"name":result.Name,username:result.username,imgurl:result.image,verified:result.verified,followers:result.followers.length,following:result.following.length},"total_following":req.body.user_email}},{safe:true},(err,ress)=>{
+            if(ress.modifiedCount!=0){
+                res.json({
+                   msg:'success'
+                });
+            }
+            else{
+                res.json({
+                    msg:'fail'
+                });
+            }
+        })
+    })
+})
+
+app.post('/fetch_total_user',(req,res)=>{
+    User.findOne({token:req.body.token},(err,result)=>{
+        bcrypt.compare(result.Email,req.body.email,(err,decrypt)=>{
+            if(decrypt==true){
+                User.find( {$and:[{token: { $ne: req.body.token}},{Email:{$nin:result.total_following}}] },(err,entire_data)=>{
+                    res.json({
+                        msg:'success',
+                        values:entire_data
+                    })
+                } )
+            }
+            else{
+                res.json({
+                    msg:'fail'
+                })
+            }
+        })
+    })
+})
+
+app.post('/username_checking',(req,res)=>{
+    if(req.body.username==""){
+        console.log("Username Checked Process")
+        res.json({
+            msg: 'success'
+          });
+    }
+    else{
+    User.findOne({username:req.body.username},(err,item)=>{
+            console.log("Username Checking Process")
+            if(err){
+                console.log("error")
+            }
+            else{
+                if(item==null){
+                    res.json({
+                        msg: 'success'
+                      });
+                }
+                else{
+                    res.json({
+                        msg: 'fail'
+                      });
+                }
+            }
+    })
+    }
+})
+
+app.post("/profile_update",(req,res)=>{
+    console.log("Profile Updating")
+    console.log(req.body.name,req.body.username)
+    User.findOne({token:req.body.token},(err,result)=>{
+        bcrypt.compare(result.Email,req.body.email,(err,decrypt)=>{
+                if(err){
+                    res.json({
+                        msg: 'fail'
+                    })
+                }
+                else{
+                    console.log(decrypt)
+                    if(decrypt==false){
+                        res.json({
+                            msg: 'wrong'
+                        })
+                    }
+                    else{
+                        if(req.body.username=="" && req.body.name==""){
+                            User.updateOne({token:req.body.token},{image:req.body.img},(err,result)=>{
+                                if(result.modifiedCount!=0){
+                                            res.json({
+                                                msg:'success'
+                                            });
+                                }
+                                else{
+                                    res.json({
+                                        msg:'fail'
+                                    });
+                                }
+                            })
+                        }
+                        else if(req.body.username==""){
+                            User.updateOne({token:req.body.token},{Name:req.body.name,image:req.body.img},(err,result)=>{
+                                if(result.modifiedCount!=0){
+                                            res.json({
+                                                msg:'success'
+                                            });
+                                }
+                                else{
+                                    res.json({
+                                        msg:'fail'
+                                    });
+                                }
+                            })
+                        }
+                        else if(req.body.name==""){
+                            User.updateOne({token:req.body.token},{username:req.body.username,image:req.body.img},(err,result)=>{
+                                if(result.modifiedCount!=0){
+                                        res.json({
+                                            msg:'success'
+                                        });
+                                }
+                                else{
+                                    res.json({
+                                        msg:'fail'
+                                    });
+                                }
+                            })
+                        }
+                        else{
+                            User.updateOne({token:req.body.token},{Name:req.body.name,username:req.body.username,image:req.body.img},(err,result)=>{
+                                if(result.modifiedCount!=0){
+                                            res.json({
+                                                msg:'success'
+                                            });
+                                }
+                                else{
+                                    res.json({
+                                        msg:'fail'
+                                    });
+                                }
+                            })
+                        }
+                    }
+                }
+            })
+    })
+})
+
 app.post('/insert', (req, res) => {
     console.log("insert data................................")
 
@@ -188,7 +336,8 @@ app.post('/insert', (req, res) => {
         post_data: req.body.post_data,
         post_url: req.body.post_url,
         verified: req.body.verified,
-        text: req.body.text
+        text: req.body.text,
+        date: new Date().getDate()
     })
     post1.save(function(err){
         if (err) {
@@ -227,11 +376,11 @@ app.post('/email_verification',(req,res)=>{
                 transporter.sendMail(mailOptions, function(error, info){
                         if (error) {
                           res.json({
-                            msg: 'fail'
+                            msg:'fail'
                           });
                         }
                         else{
-                          const data = new Otp({
+                          const data =new Otp({
                                   email: tomail,
                                   otp:rand
                           });
@@ -290,18 +439,28 @@ app.post('/forgot_password_email',(req,res)=>{
 })
 
 app.post('/password_change',(req,res)=>{
-    User.updateOne({Email:req.body.tomail},{Password:req.body.newpass},(err)=>{
-        if (err) {
-            res.json({
-              msg: 'fail'
-            });
-          }
-          else{
-            res.json({
-              msg: 'success'
-            })
-          }
-    })
+    bcrypt.hash(req.body.newpass,saltRounds,(err,hash)=>{
+            if(err){
+                res.json({
+                msg: 'fail'
+                })
+            }
+            else{
+                User.updateOne({Email:req.body.tomail},{Password:hash},(err)=>{
+                        console.log(err)
+                        if (err) {
+                            res.json({
+                              msg: 'fail'
+                            });
+                          }
+                          else{
+                            res.json({
+                              msg: 'success'
+                            })
+                          }
+                    })
+           }
+        })
 })
 
 app.post('/otp_verification',(req,res)=>{
@@ -345,6 +504,7 @@ app.post('/user_signin',(req,res)=>{
             })
         }
         else{
+        console.log(result.Password,req.body.pass)
             if(result==null){
                 res.json({
                     msg: 'wrong'
