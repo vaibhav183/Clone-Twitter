@@ -6,6 +6,7 @@ import Widget from './widget';
 import Signin from './Sign_in'
 import Signup from './Sign_up'
 import Profile from './Profile'
+import Members from './Members'
 // import DB from "./Firebase";
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
       <Route exact path="/sign_in" component={Signin}/>
       <Route exact path="/signup" component={Signup}/>
       <Route exact path="/profile" component={Profile}/>
+      <Route exact path="/members" component={Members}/>
     </div>
     
     </BrowserRouter>

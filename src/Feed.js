@@ -66,7 +66,7 @@ function Feed() {
        return () => {  
         abortController.abort();  
        }  
-   },[])
+   },[posts])
 
    const submission=async(e)=>{
        e.preventDefault();
@@ -168,7 +168,6 @@ function Feed() {
     Axios.post("https://clone-twitter-by-vaibhav.herokuapp.com/fetching_data_user",{token:myState,token1:myState1})
     .then((response)=>{
         if(response.data.msg=='success'){
-            console.log(response.data.posts)
             dispatch(filling(response.data))
         }
         else{

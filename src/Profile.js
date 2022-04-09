@@ -1,5 +1,11 @@
 import React,{useEffect,useState} from 'react';
+import Alert from '@mui/material/Alert';
+import AlertTitle from '@mui/material/AlertTitle';
+import CancelIcon from '@mui/icons-material/Cancel';
 import "./Profile.css"
+import 'animate.css';
+import $ from 'jquery';
+import Axios from 'axios'
 import Badge from '@mui/material/Badge';
 import Container from '@mui/material/Container';
 import List from '@mui/material/List';
@@ -99,6 +105,12 @@ function stringToColor(string) {
 }
 
 function stringAvatar(name) {
+  if(name.split('\n').length<=1){
+    return {
+      sx: {bgcolor: stringToColor(name)},
+      children: `${name[0]}`,
+    };
+  }
   return {
     sx: {bgcolor: stringToColor(name)},
     children: `${name.split(' ')[0][0]}${name.split(' ')[1][0]}`,
@@ -123,7 +135,38 @@ export default function SimpleContainer() {
   const [bposts,setBposts]=useState(false)
   const [bcomments,setBcomments]=useState(true)
   const [update,setUpdate]=useState(false)
-  const [photo_upload,setPhoto_upload]=useState("Upload Photo")
+  const [photo_upload,setPhoto_upload]=useState("")
+  const [name_err,setName_err]=useState("")
+  const [user_err,setUser_err]=useState("")
+  const [updated,setUpdated]=useState(false)
+
+  //Photo Upload
+  function upload(value){
+    // console.log(value.target.files[0].size)
+    if(((value.target.files[0].type)=="image/png" || (value.target.files[0].type)=="image/jpeg") && (value.target.files[0].size)>0){
+      console.log(value.target)
+      setPhoto_upload(value.target.files[0].name)
+    }
+    else{
+      setPhoto_upload("Only Photo Allowed")
+    }
+  }
+
+  //Fetching data
+  useEffect(() => {
+    Axios.post("https://clone-twitter-by-vaibhav.herokuapp.com/fetching_data_user",{token:myState,token1:myState1})
+    .then((response)=>{
+        if(response.data.msg=='success'){
+            dispatch(filling(response.data))
+        }
+        else{
+            dispatch(setNull())
+        }
+    })
+    .catch((err)=>{
+        console.log(err)
+    })
+    },[user_data,myState1,myState]);
 
   const handleClick=(e)=>{
     switch(e.target.id){
@@ -177,8 +220,9 @@ export default function SimpleContainer() {
   const fhandleClose = ()=> setFopen(false)
   const fhandleOpen = () => setFopen(true)
 
+  // Block User
   const block=(e)=>{
-    axios.post('http://localhost:3001/block_user',{email:user_data.email,user_email:(e.target.id)})
+    axios.post('https://clone-twitter-by-vaibhav.herokuapp.com/block_user',{email:user_data.email,user_email:(e.target.id)})
     .then((res)=>{
       if(res.data.msg=='success'){
         dispatch(follower_change(e.target.id));
@@ -195,8 +239,9 @@ export default function SimpleContainer() {
     })
   }
 
+  //Unfollow User
   const unfollow=(e)=>{
-    axios.post('http://localhost:3001/unfollow_user',{email:user_data.email,user_email:(e.target.id)})
+    axios.post('https://clone-twitter-by-vaibhav.herokuapp.com/unfollow_user',{email:user_data.email,user_email:(e.target.id)})
     .then((res)=>{
       if(res.data.msg=='success'){
         dispatch(following_change(e.target.id));
@@ -213,13 +258,140 @@ export default function SimpleContainer() {
     })
   }
 
+  const errorRemove=(e)=>{
+    if(e.target.id=="username")
+    setUser_err("");
+    else
+    setName_err("");
+  }
+  // Form Submission aaa
+  const submitForm = (event) => {
+    event.preventDefault();
+    // console.log(event.target[0].files[0])
+    if($('#name').val()=="" && $('#username').val()=="" && (event.target[0].files[0]==undefined)){
+      setName_err(<span style={{color:"red",fontSize:"1.2em"}}>Enter any details to update it</span>);
+      setUser_err(<span style={{color:"red",fontSize:"1.2em"}}>Enter any details to update it</span>);
+    }
+    else{
+      setName_err("");
+      setUser_err("");
+      $('#updating').removeClass("hide_grid")
+      $('#update').addClass("hide_grid");
+      Axios.post("https://clone-twitter-by-vaibhav.herokuapp.com/username_checking",{username:$('#username').val()})
+      .then((res)=>{
+        if(res.data.msg=='success'){
+          if((event.target[0].files[0]!=undefined) && ((event.target[0].files[0].type)=="image/jpeg" || (event.target[0].files[0].type)=="image/png") && (event.target[0].files[0].size)>0){
+             const formData = new FormData()
+             formData.append('file', event.target[14].files[0])
+             formData.append('upload_preset','postimage' )
+             Axios.post("https://api.cloudinary.com/v1_1/vaibhav183vibhu/image/upload",formData)
+             .then(async function (response){
+              Axios.post("https://clone-twitter-by-vaibhav.herokuapp.com/profile_update",{email:myState1,token:myState,name:$('#name').val(),username:$('#username').val(),img:response.data.secure_url})
+              .then((response)=>{
+                if (response.data.msg === 'success'){
+                  Axios.post("https://clone-twitter-by-vaibhav.herokuapp.com/fetching_data_user",{token:myState,token1:myState1})
+                  .then((response)=>{
+                      if(response.data.msg=='success'){
+                          dispatch(filling(response.data))
+                      }
+                      else{
+                          dispatch(setNull())
+                      }
+                      $('#updating').addClass("hide_grid");
+                      $('#update').removeClass("hide_grid");
+                  })
+                  .catch((err)=>{
+                    alert("Some Error Occured")
+                    $('#updating').addClass("hide_grid");
+                    $('#update').removeClass("hide_grid");
+                  })
+                }else if(response.data.msg === 'fail'){
+                  alert("Some Error Occured")
+                  $('#updating').addClass("hide_grid");
+                  $('#update').removeClass("hide_grid");
+                }
+              })
+              .catch((error)=>{
+                alert("Ooh!! something went wrong")
+                $('#updating').addClass("hide_grid");
+                  $('#update').removeClass("hide_grid");
+              })
+             })
+             .catch((error)=>{
+               alert("Ooh!! something went wrong")
+               $('#updating').addClass("hide_grid");
+                  $('#update').removeClass("hide_grid");
+             })
+            }
+            else{
+              Axios.post("https://clone-twitter-by-vaibhav.herokuapp.com/profile_update",{email:myState1,token:myState,name:($('#name').val()),username:$('#username').val(),img:user_data.imgurl})
+              .then((response)=>{
+                console.log(response.data.msg)
+                if (response.data.msg === 'success'){
+                  Axios.post("https://clone-twitter-by-vaibhav.herokuapp.com/fetching_data_user",{token:myState,token1:myState1})
+                  .then((response)=>{
+                      if(response.data.msg=='success'){
+                          dispatch(filling(response.data))
+                      }
+                      else{
+                        alert("Couldn't update due to technical problem")
+                          dispatch(setNull())
+                      }
+                      $('#updating').addClass("hide_grid");
+                      $('#update').removeClass("hide_grid");
+                  })
+                  .catch((err)=>{
+                    alert("Some Error Occured")
+                    $('#updating').addClass("hide_grid");
+                    $('#update').removeClass("hide_grid");
+                  })
+                }else if(response.data.msg === 'fail'){
+                  alert("Some Error Occured")
+                  $('#updating').addClass("hide_grid");
+                    $('#update').removeClass("hide_grid");
+                }
+                else{
+                  alert("Some Error Occured. Check your internet Connection")
+                  $('#updating').addClass("hide_grid");
+                    $('#update').removeClass("hide_grid");
+                }
+              })
+              .catch((error)=>{
+                alert("Ooh!! Something went wrong")
+                $('#updating').addClass("hide_grid");
+                    $('#update').removeClass("hide_grid");
+              })
+            }
+        }
+        else{
+          alert("Ooh!! Something went wrong")
+                $('#updating').addClass("hide_grid");
+                    $('#update').removeClass("hide_grid");
+        }
+      })
+      .catch((err)=>{
+        alert("Ooh!! Something went wrong")
+                $('#updating').addClass("hide_grid");
+                    $('#update').removeClass("hide_grid");
+      })
+    }
+  }
+
+  const cancelAlert=()=>{
+    setUpdated(false);
+  }
+
   if(myState!=null && myState1!=null){
   return (
       <Container maxWidth="lg" style={{marginTop:'1em'}}>
+        {updated && <Alert className="animate__animated animate__fadeInDown" severity="success" style={{position:'absolute',zIndex:10,marginLeft:'35%',width:"30%"}}>
+        <AlertTitle style={{width:"190%"}}>Update Successfully<CancelIcon style={{float:'right',cursor:"pointer"}} onClick={cancelAlert} /></AlertTitle>
+        Your Profile has been <strong>updated</strong>
+      </Alert>}
       <Grid container spacing={4}>
         <Grid item xs={8} sm={4}>
           <Item>
-              <Avatar {...stringAvatar(user_data.name)} className="Profile_Photo" src={user_data.imgurl} />
+              {user_data.name!="" && <Avatar {...stringAvatar(user_data.name)} className="Profile_Photo" src={user_data.imgurl} />}
               <h1>{user_data.name}</h1>
               <h3 style={{color:'gray',marginTop:'-1em'}}>{user_data.username}{" "}{user_data.verified && <VerifiedIcon id="post_headerSpecial" />}</h3>
               <div>
@@ -236,7 +408,7 @@ export default function SimpleContainer() {
               <MyButton color="violet" id="comments" onClick={(e)=>handleClick(e)}>Comments</MyButton>
               </Badge>
               <Badge className="update_profile">
-              <MyButton color="violet" id="update" onClick={(e)=>handleClick(e)}>Update Profile</MyButton>
+              <MyButton color="red" id="update" onClick={(e)=>handleClick(e)}>Update Profile</MyButton>
               </Badge>
               </div>
           </Item>
@@ -398,113 +570,83 @@ export default function SimpleContainer() {
               ))}
             </div>}
 
-            {/* Update Profile */}
+            {/* Update Profile aaa */ }
             {update && <div className="comments">
             <h1 style={{textAlign:'center',marginTop:'0em'}}>Update Profile</h1>
-                  {/* <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-                    <LockOutlinedIcon />
-                  </Avatar> */}
-                  {/* <Typography component="h1" variant="h5">
-                    Sign up
-                  </Typography> */}
-                  <Box component="form" noValidate sx={{ mt: 3 }}>
-                  <Button component="label">
+                  <Box component="form" noValidate onSubmit={submitForm}  sx={{ mt: 3, marginLeft:'auto',marginRight:'auto',backgroundImage:'linear-gradient(315deg, #EDE574 0%, #E1F5C4 74%)'}}>
                   <Badge
                     overlap="circular"
                     anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
                     badgeContent={
-                      <CreateIcon />
+                      <CreateIcon style={{color:'black'}} />
                     }
+                    component="label"
+                    style={{marginLeft:'40%',cursor:"pointer"}}
                   >
-                  <Avatar {...stringAvatar(user_data.name)} src={user_data.imgurl} style={{width:'7em',height:'7em',opacity:'0.7'}} />
-                  </Badge>
+                  {user_data.name!="" && <Avatar {...stringAvatar(user_data.name)} src={user_data.imgurl} style={{marginTop:"10%",width:'7em',height:'7em',opacity:'0.7'}} />}
                   <input
                     type="file"
+                    onChange={(e) => upload(e)}
                     hidden
                   />
-                  </Button>
+                  </Badge>
+
+                  <h4 style={{color:"revert",textAlign:'center'}}>{photo_upload}</h4>
                     <Grid container spacing={2}>
-                      <Grid item xs={12} sm={6}>
+                      <Grid item xs={8} style={{marginLeft:'auto',marginRight:'auto'}}>
                         <TextField
                           autoComplete="name"
                           name="name"
                           required
                           fullWidth
                           id="name"
+                          placeholder={user_data.name}
                           label="Name"
-                          value={user_data.name}
+                          onChange={errorRemove}
                           autoFocus
-                          helperText={name_error}
+                          helperText={name_err}
                         />
                       </Grid>
 
-                      <Grid item xs={10} id='email_grid'>
+                      <Grid item xs={8} id='email_grid' style={{marginLeft:'auto',marginRight:'auto'}}>
                         <TextField
                           required
                           fullWidth
                           id="username"
                           label="Username"
                           name="username"
-                          value={user_data.username}
+                          placeholder={user_data.username}
+                          onChange={errorRemove}
                           autoComplete="username"
-                          helperText={user_error}
+                          helperText={user_err}
                         />
-                      </Grid>
-                      
-                      <Grid item xs={10}>
-                        <Button
-                          variant="outlined"
-                          component="label"
-                          endIcon={<PhotoCamera />}
-                        >
-                          {photo_upload}
-                          <input
-                            type="file"
-                            // onChange={(e) => upload(e)}
-                            hidden
-                          />
-                        </Button>
                       </Grid>
 
                     </Grid>
                     <Button
                       type="submit"
-                      fullWidth
-                      id="signUp"
+                      id="update"
                       variant="contained"
                       sx={{ mt: 3, mb: 2 }}
+                      style={{width:"60%",marginLeft:'20%',marginBottom:"40%"}}
                     >
-                      Sign Up
+                      Update Profile
                     </Button>
 
-                    {/* Signing Up */}
+                    {/* Updating */}
                     <LoadingButton
                       loading
                       className="hide_grid"
-                      id="signingUp"
+                      id="updating"
                       fullWidth
                       loadingPosition="start"
                       startIcon={<SaveIcon />}
                       sx={{ mt: 3, mb: 2,bgcolor:'#bd00fc' }}
+                      style={{width:"60%",marginLeft:'20%',marginBottom:"40%"}}
                       variant="contained"
                     >
-                      Signing up...
+                      Updating...
                     </LoadingButton>
-
-
-                    <Link to="/sign_in" style={{textDecoration:"none"}}>
-                    <Button fullWidth variant="text" style={{bgcolor:"red"}}>Already have an account? Sign in</Button>
-                    </Link>
-                    <Link to="/" style={{textDecoration:"none"}}>
-                    <Button fullWidth sx={{ mt: 2, mb: 5 }} variant="text">Home Page</Button>
-                    </Link>
-                    {/* <Grid justifyContent="center">
-                        <Link to="/sign_in">
-                        <Linked href="#" variant="body2">
-                          Already have an account? Sign in
-                        </Linked>
-                        </Link>
-                    </Grid> */}
                   </Box>
               </div>}
         </Grid>

@@ -109,7 +109,6 @@ function Sidebaroption({text,Icon,rou_val}) {
             <div className="sidebaroption">
                 <Icon/>
                 <h2><Link className="link" to={rou_val}>{text}</Link></h2>
-                
             </div>
         );
     }

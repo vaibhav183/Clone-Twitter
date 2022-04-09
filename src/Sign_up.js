@@ -168,8 +168,9 @@ export default function SignUp() {
     else{
       $('#verify_grid').addClass("hide_grid");
       $('#verifying').removeClass("hide_grid");
-      Axios.post("https://clone-twitter-by-vaibhav.herokuapp.com/email_verification",{tomail:$('#email').val()})
+      Axios.post("http://localhost:3001/email_verification",{tomail:$('#email').val()})
       .then((response)=>{
+        console.log(response)
         if(response.data.msg === 'found'){
           $('#verify_grid').removeClass("hide_grid");
           $('#verifying').addClass("hide_grid");
@@ -274,7 +275,7 @@ export default function SignUp() {
     //   email: data.get('email'),
     //   password: data.get('password'),
     // });
-  };
+  }
   if(myState!=null && myState1!=null){
     return <Redirect to="/" />
   }

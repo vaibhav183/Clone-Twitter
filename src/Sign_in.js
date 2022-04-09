@@ -76,7 +76,7 @@ export default function SignIn() {
       else{
         $('#signin').addClass('loading');
         $('#signing').removeClass('loading');
-        Axios.post("https://clone-twitter-by-vaibhav.herokuapp.com/user_signin",{email:($('#email').val()),pass:($('#password').val())})
+        Axios.post("http://localhost:3001/user_signin",{email:($('#email').val()),pass:($('#password').val())})
         .then((response)=>{
           if(response.data.msg=='success'){
             localStorage.setItem('token',(response.data.token));
@@ -133,7 +133,7 @@ export default function SignIn() {
       else{
         $('#otpButton').addClass('loading');
         $('#loadingButton').removeClass('loading');
-        Axios.post("https://clone-twitter-by-vaibhav.herokuapp.com/otp_verification",{email:$('#verifyEmail').val(),otp:$('#verificationOtp').val()})
+        Axios.post("http://localhost:3001/otp_verification",{email:$('#verifyEmail').val(),otp:$('#verificationOtp').val()})
         .then((response)=>{
             if (response.data.msg === 'success'){
               $('#loadingButton').addClass('loading');
@@ -169,7 +169,7 @@ export default function SignIn() {
       else{
         $('#sendButton').addClass('loading');
         $('#loadingButton').removeClass('loading');
-      Axios.post("https://clone-twitter-by-vaibhav.herokuapp.com/forgot_password_email",{tomail:$('#verifyEmail').val()})
+      Axios.post("http://localhost:3001/forgot_password_email",{tomail:$('#verifyEmail').val()})
       .then((response)=>{
         if (response.data.msg === 'success'){
             $('#email1st').addClass("hideit");
@@ -201,7 +201,7 @@ export default function SignIn() {
         setMatch(notMatch())
       }
       else{
-        Axios.post("https://clone-twitter-by-vaibhav.herokuapp.com/password_change",{tomail:$('#verifyEmail').val(),newpass:$('#new1').val()})
+        Axios.post("http://localhost:3001/password_change",{tomail:$('#verifyEmail').val(),newpass:$('#new1').val()})
         .then((response)=>{
           if (response.data.msg === 'success'){
             alert("Password Change Successfully")

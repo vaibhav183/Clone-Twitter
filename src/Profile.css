@@ -21,6 +21,12 @@
     color: white !important;
 }
 
+.update_profile {
+    justify-content: center !important;
+    margin-top: 1em !important;
+    width: 60% !important;
+}
+
 .comments {
     height: 36em;
     overflow-y: scroll;
@@ -28,6 +34,10 @@
 
 .comments::-webkit-scrollbar {
     display: none;
+}
+
+.hide_grid {
+    display: none !important;
 }
 
 
