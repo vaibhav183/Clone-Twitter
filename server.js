@@ -50,8 +50,25 @@ const User_Data = new mongoose.Schema({
     Password: String,
     image:String,
     verified:Boolean,
-    followers:[Object],
-    following:[Object],
+    followers:[{
+               name:String,
+               email:String,
+               username:String,
+               imgurl:String,
+               verified:Boolean,
+               followers:Number,
+               following:Number,
+               block:Boolean
+              }],
+    following:[{
+                 name:String,
+                 email:String,
+                 username:String,
+                 imgurl:String,
+                 verified:Boolean,
+                 followers:Number,
+                 following:Number
+                }],
     total_following:[String],
     posts:[Object],
     comments:[Object],
@@ -150,7 +167,7 @@ app.post('/fetching_data_user',(req,res)=>{
 })
 
 app.post('/block_user',(req,res)=>{
-    User.updateOne({Email:req.body.email},{"$pull":{"followers":{"email":req.body.user_email}}},{safe:true},(err,result)=>{
+    User.updateOne({'Email':req.body.email,'followers.email':req.body.user_email},{'$set':{'followers.$.block':!(req.body.block_status)}},{safe:true},(err,result)=>{
         if(result.modifiedCount!=0){
             res.json({
                 msg:'success'
@@ -165,11 +182,20 @@ app.post('/block_user',(req,res)=>{
 })
 
 app.post('/unfollow_user',(req,res)=>{
-    User.updateOne({Email:req.body.email},{"$pull":{"following":{"email":req.body.user_email}}},{safe:true},(err,result)=>{
+    User.updateOne({Email:req.body.email},{"$pull":{"following":{"email":req.body.user_email},"total_following":req.body.user_email}},{safe:true},(err,result)=>{
         if(result.modifiedCount!=0){
-            res.json({
-                msg:'success'
-            });
+            User.updateOne({Email:req.body.user_email},{"$pull":{"followers":{"email":req.body.email}}},(err,resdata)=>{
+                if(resdata.modifiedCount!=0){
+                    res.json({
+                        msg:'success'
+                    });
+                }
+                else{
+                    res.json({
+                        msg:'fail'
+                    });
+                }
+            })
         }
         else{
             res.json({
@@ -183,9 +209,20 @@ app.post('/follow_user',(req,res)=>{
     User.findOne({Email:req.body.user_email},(err,result)=>{
         User.updateOne({Email:req.body.email},{"$push":{"following":{"email":req.body.user_email,"name":result.Name,username:result.username,imgurl:result.image,verified:result.verified,followers:result.followers.length,following:result.following.length},"total_following":req.body.user_email}},{safe:true},(err,ress)=>{
             if(ress.modifiedCount!=0){
-                res.json({
-                   msg:'success'
-                });
+                User.findOne({Email:req.body.email},(err,resdata)=>{
+                    User.updateOne({Email:req.body.user_email},{"$push":{"followers":{"email":req.body.email,"name":resdata.Name,username:resdata.username,imgurl:resdata.image,verified:resdata.verified,followers:resdata.followers.length,following:resdata.following.length,block:true}}},(err,finalres)=>{
+                        if(finalres.modifiedCount!=0){
+                            res.json({
+                               msg:'success'
+                            });
+                        }
+                        else{
+                            res.json({
+                               msg:'fail'
+                            });
+                        }
+                    })
+                })
             }
             else{
                 res.json({
