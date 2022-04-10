@@ -74,11 +74,13 @@ export default function SignUp() {
   }
 
   //Photo Upload
+  const [photo_val, setPhoto_val] = useState(null)
   function upload(value){
-    // console.log(value.target.files[0].size)
+    console.log(value.target.files[0])
     if(((value.target.files[0].type)=="image/png" || (value.target.files[0].type)=="image/jpeg") && (value.target.files[0].size)>0){
       setPhoto_upload(value.target.files[0].name)
       setColor("success")
+      setPhoto_val(value.target.files[0])
       setVariant("contained");
     }
     else{
@@ -216,9 +218,9 @@ export default function SignUp() {
     else{
       $('#signingUp').removeClass("hide_grid");
       $('#signUp').addClass("hide_grid");
-      if((event.target[14].files[0]!=undefined) && ((event.target[14].files[0].type)=="image/jpeg" || (event.target[14].files[0].type)=="image/png") && (event.target[14].files[0].size)>0){
+      if(photo_val!=null){
       const formData = new FormData()
-       formData.append('file', event.target[14].files[0])
+       formData.append('file', photo_val)
        formData.append('upload_preset','postimage' )
        Axios.post("https://api.cloudinary.com/v1_1/vaibhav183vibhu/image/upload",formData)
        .then(async function (response){
