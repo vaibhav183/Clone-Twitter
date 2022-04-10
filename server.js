@@ -388,11 +388,11 @@ app.post('/insert', (req, res) => {
 app.post('/email_verification',(req,res)=>{
     var rand=Array.from(Array(6), () => Math.floor(Math.random() * 9)).join('');
     var message=`You tried to log in our portal.Here is the six-digit OTP to continue ${rand} . Use this OTP for Email Verification`
-    const frommail='hiteshkyq23@gmail.com'
-      const password = 'Hitesh@234'
+    const frommail='temporary183@hotmail.com'
+      const password = 'Twitterapp1234'
       const tomail=req.body.tomail
       var transporter = nodemailer.createTransport({
-        service: 'gmail',
+        service: 'hotmail',
         auth: {
           user: frommail,
           pass: password
