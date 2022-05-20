@@ -115,6 +115,95 @@ app.get('/fetch', (req, res) => {
         }
       });
       }*/
+
+//Banking System//
+const Customer_data = new mongoose.Schema({
+    name:String,
+    Account_No:String,
+    email:String,
+    balance:Number
+})
+const Customers = mongoose.model('Customers', Customer_data);
+const Transactions_data = new mongoose.Schema({
+    date:String,
+    Credited_by:String,
+    Debated_to:String,
+    Credited_name:String,
+    Debated_name:String,
+    amount:Number
+})
+const Transactions = mongoose.model('Transactions', Transactions_data);
+app.get("/customers",(req,res)=>{
+    Customers.find({},(err,result)=>{
+        if(err){
+            res.json({
+            msg:'empty'
+            });
+        }
+        else{
+            res.json({
+            msg:result
+            });
+        }
+    })
+})
+app.put('/customers/:detail',(req,res)=>{
+    let ind=Number(req.params.detail.indexOf('&'));
+    let user1=req.params.detail.slice(0,ind)
+    let user2=req.params.detail.slice(ind+1,req.params.detail.length);
+    let increment=parseInt(req.body.amount)
+    Customers.updateOne({Account_No:user1},{$inc:{balance:-(increment)}},{new: true },(err,res1)=>{
+          if(err){
+           res.json({
+          message:false
+          })
+          }
+          else{
+          Customers.updateOne({Account_No:user2},{$inc:{balance:(increment)}},{new: true },(err,res2)=>{
+                    if(err){
+                    res.json({
+                    message:false
+                    })
+                    }
+                    else{
+                    res.json({
+                      message:true
+                      })
+                    }
+              })
+          }
+    })
+})
+app.get('/transactions',(req,res)=>{
+    Transactions.find({},(err,result)=>{
+        res.json({
+          msg:result
+        })
+    })
+})
+app.post('/transactions',(req,res)=>{
+    console.log(req.body.from,req.body.to)
+    let date= new Date();
+    date=date.toDateString();
+    Customers.findOne({Account_No:req.body.from},(err1,res1)=>{
+        Customers.findOne({Account_No:req.body.to},(err2,res2)=>{
+            console.log(res1,res2)
+            const trans=new Transactions({
+                date:date,
+                Credited_by:req.body.from,
+                Debated_to:req.body.to,
+                Credited_name:res2.name,
+                Debated_name:res1.name,
+                amount:req.body.amount
+            })
+            trans.save((err)=>{
+                res.send('success');
+            })
+        })
+    })
+})
+
+
 var array_object;
 app.post('/fetching_data_user',(req,res)=>{
     User.findOne({token:req.body.token},(err,result)=>{
@@ -440,11 +529,11 @@ app.post('/email_verification',(req,res)=>{
 app.post('/forgot_password_email',(req,res)=>{
     var rand=Array.from(Array(6), () => Math.floor(Math.random() * 9)).join('');
     var message=`You forgot your password. Use this OTP ${rand} to change your Password.`
-    const frommail='hiteshkyq23@gmail.com'
-      const password = 'Hitesh@234'
+    const frommail='temporary183@hotmail.com'
+      const password = 'Twitterapp1234'
       const tomail=req.body.tomail
       var transporter = nodemailer.createTransport({
-        service: 'gmail',
+        service: 'hotmail',
         auth: {
           user: frommail,
           pass: password
