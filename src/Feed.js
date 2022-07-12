@@ -10,6 +10,9 @@ import Post from "./Post"
 import FormData from 'form-data';
 import {useSelector,useDispatch} from "react-redux"
 import {filling,clear, setNull} from "./actions/index";
+import axios from 'axios';
+import LoadingScreen from './More_Detail/more_detail/components/shared/LoadingScreen';
+
 // import {Image} from 'cloudinary-react'
 
 //Profile Photo short Name
@@ -43,44 +46,27 @@ function Feed() {
     const [error_data,setError_data]=useState("")
     const [dbdata,setDbdata] = useState([]);
     const [posts, setPosts] = useState({
-        name:"Vaibhav Pandey",
-        username:"Vaibhav@183",
-        email:"vp789792@gmail.com",
+        name:"",
+        username:"",
+        user_pic:"",
+        email:"",
         post_data:"",
         post_url:"",
-        verified:true,
+        verified:"",
         text:""
     });
    const textchange=(e)=>{
        setPosts({ ...posts, text:(e.target.value)})
    }
-   useEffect(()=>{
-       let abortController = new AbortController(); 
-       Axios.get("https://clone-twitter-by-vaibhav.herokuapp.com/fetch")  
-       .then((data)=>{
-            setDbdata((data.data).reverse())
-       })
-       .catch(()=>{
-           console.log("Error, Can't fetch from database")
-       })
-       return () => {  
-        abortController.abort();  
-       }  
-   },[posts])
 
+
+//////////////////// Post ////////////////////////
    const submission=async(e)=>{
        e.preventDefault();
        const formData = new FormData()
        formData.append('file', dataPost)
        formData.append('upload_preset','postimage' )
-    //    formData.append('name',posts.name)
-    //    formData.append('username',posts.username)
-    //    formData.append('email',posts.email)
-    //    formData.append('post_url',posts.post_url)
-    //    formData.append('verified',posts.verified)
-    //    formData.append('text',posts.text)
-    //    console.log(formData)
-    console.log(dataPost,posts.text,posts.post_url)
+       console.log(dataPost,posts.text,posts.post_url)
        if(dataPost===null && posts.text==='' && posts.post_url===''){
         setError_data("Pick your Idea first....")
         setUploadName("Upload Image")
@@ -95,25 +81,25 @@ function Feed() {
             const store = {
                 name:posts.name,
                 username:posts.username,
+                user_pic:posts.user_pic,
                 email:posts.email,
                 post_data:response.data.secure_url,
                 post_url:posts.post_url,
                 verified:posts.verified,
                 text:posts.text
             }
-            console.log(store)
             Axios.post("https://clone-twitter-by-vaibhav.herokuapp.com/insert",store)
             .then((response)=>{
                 console.log(response)
                 setUploadName("Upload Image")
-                setPosts({...posts,text:"",post_url:""})
+                setPosts({...posts,text:"",post_url:"",post_data:""})
                 setDataPost(null)
                 setError_data("Idea submitted Successfully")
             })
             .catch((error)=>{
                 console.log(error)
                 setUploadName("Upload Image")
-                setPosts({...posts,post_url:"",text:""})
+                setPosts({...posts,post_url:"",text:"",post_data:""})
                 setDataPost(null)
                 setError_data("Ooh something wrong!!")
             })
@@ -123,34 +109,25 @@ function Feed() {
       })
      }
      else{
-        const store = {
-            name:posts.name,
-            username:posts.username,
-            email:posts.email,
-            post_data:"",
-            post_url:posts.post_url,
-            verified:posts.verified,
-            text:posts.text
-        }
-        Axios.post("https://clone-twitter-by-vaibhav.herokuapp.com/insert",store)
-            .then((response)=>{
-                console.log(response)
-                setUploadName("Upload Image")
-                setPosts({...posts,text:"",post_url:""})
-                setDataPost(null)
-                setError_data("")
-            })
-            .catch((error)=>{
-                console.log(error)
-                setUploadName("Upload Image")
-                setPosts({...posts,post_url:"",text:""})
-                setDataPost(null)
-                setError_data("")
+        Axios.post("https://clone-twitter-by-vaibhav.herokuapp.com/insert",posts)
+        .then((response)=>{
+            console.log(response)
+            setUploadName("Upload Image")
+            setPosts({...posts,text:"",post_url:""})
+            setDataPost(null)
+            setError_data("")
+        })
+        .catch((error)=>{
+            console.log(error)
+            setUploadName("Upload Image")
+            setPosts({...posts,post_url:"",text:""})
+            setDataPost(null)
+            setError_data("")
         })
      }
    }
 
-
+//////////////  Checking compatibility of upload file ////////////////////
    const [uploadName,setUploadName] =useState("Upload Image");
    const uploaded=(e)=>{
        var s=(e.target.files[0].type)
@@ -160,15 +137,26 @@ function Feed() {
         setDataPost(e.target.files[0])
        }
    }
+
+///////////////// Set url of given link /////////////////////////
    const uploadUrl=(e)=>{
     setPosts({...posts,post_url:e.target.value})
    }
 
+////////////////////  Fetching User Details Who are currently logged in /////////////////////////
    useEffect(() => {
     Axios.post("https://clone-twitter-by-vaibhav.herokuapp.com/fetching_data_user",{token:myState,token1:myState1})
     .then((response)=>{
         if(response.data.msg=='success'){
-            dispatch(filling(response.data))
+            ////////////// Fill the user_data with help of reducer/////////////
+            dispatch(filling(response.data))  // Filling is action on user_details.js file values
+            setPosts({ ...posts,
+                name:response.data.name,
+                username:response.data.username,
+                user_pic:response.data.image,
+                email:response.data.email,
+                verified:response.data.verified,
+            })
         }
         else{
             dispatch(setNull())
@@ -179,22 +167,44 @@ function Feed() {
     })
     },[]);
 
-   // Returning Object
+//////////////////// Fetch All Posts and store into dbdata /////////////////////////
+    useEffect(()=>{
+        let abortController = new AbortController(); 
+        Axios.get("https://clone-twitter-by-vaibhav.herokuapp.com/fetch")  
+        .then((data)=>{
+             setDbdata((data.data).reverse())
+        })
+        .catch(()=>{
+            console.log("Error, Can't fetch from database")
+        })
+        return () => {  
+         abortController.abort();  
+        }  
+     },[posts,myState,myState1])
+
+
+///////////////////////////// Returning Object /////////////////////////////////////
    if(myState==null || myState1==null){
        return (
         <div className="feed">
-            <div className="feed_header">
-                <h1 className="animate__animated animate__backInUp" style={{marginTop:1}}>Home</h1>
+            <div className="feed_header" style={{backgroundColor:"#0A1342"}}>
+                <h1 className="animate__animated animate__rubberBand" style={{marginTop:1,color:"white"}}>Welcome in Twitter World</h1>
             </div>
-            {dbdata.map((post) => (  
+            {dbdata.length==0 && <LoadingScreen name="Fetching Posts..."/>}
+            {dbdata.map((post,index) => (  
             <Post 
-            display_pic={Vaibhav} 
+            key={index}
+            display_pic={post.user_pic}
             Name={post.name} 
-            Username={post.username} 
-            verified={post.verified} 
-            text={post.text} 
+            Username={post.username}
+            email={post.email}
+            verified={post.verified}
+            text={post.text}
             post_data={post.post_data}
-            post_url={post.post_url} 
+            post_url={post.post_url}
+            likes={post.likes}
+            userComment={post.user_comment}
+            unique={post._id}
             />
              ))}
         </div>
@@ -203,13 +213,13 @@ function Feed() {
    else{
     return (
         <div className="feed">
-            <div className="feed_header">
-                <h1 className="animate__animated animate__backInUp" style={{marginTop:2}}>Welcome {user_data.name}</h1>
+            <div className="feed_header" style={{backgroundColor:"#0A1342"}}>
+                <h1 className="animate__animated animate__fadeInDown" style={{marginTop:2,color:"white"}}>Welcome {user_data.name}</h1>
             </div>
             <form className="form" method="POST">
                 <div className="input_box">
                 <Avatar {...stringAvatar("Vaibhav Pandey")} src={user_data.imgurl} />
-                <textarea placeholder="What's happening in college...." value={posts.text} onChange={textchange}  />
+                <textarea placeholder="What's happening...." value={posts.text} onChange={textchange}  />
                 </div>
                 <div className="posting_data">
                 <Button className="upload" variant="outlined" component="label" startIcon={<FileUploadIcon/>}>
@@ -218,20 +228,25 @@ function Feed() {
                 <input className="input_url" placeholder="Enter URL of Image" value={posts.post_url}  type="text" onChange={(e)=>uploadUrl(e)}/>
                 </div>
                 <div className="submit_button">
-                <h4 className="Error_sign">{error_data}</h4>
+                <h3 className="Error_sign">{error_data}</h3>
                 <Button className="submit" variant="outlined" onClick={submission}>Tweet</Button>
                 </div>
-                
             </form>
-            {dbdata.map((post) => (  
+            {dbdata.length==0 && <LoadingScreen name="Fetching Posts..."/>}
+            {dbdata.map((post,index) => (  
             <Post
-            display_pic={Vaibhav} 
+            key={index}
+            display_pic={post.user_pic}
             Name={post.name} 
             Username={post.username} 
+            email={post.email}
             verified={post.verified} 
             text={post.text} 
             post_data={post.post_data}
-            post_url={post.post_url} 
+            post_url={post.post_url}
+            likes={post.likes}
+            userComment={post.user_comment}
+            unique={post._id}
             />
              ))}
         </div>

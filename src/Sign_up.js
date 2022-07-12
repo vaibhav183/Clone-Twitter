@@ -34,6 +34,7 @@ import {useSelector,useDispatch} from "react-redux"
 import {setNull,setTokenNumber,setTokenNumber1} from "./actions/index";
 import changeToken from './reducers/setToken';
 import changeToken1 from './reducers/setToken1';
+import Navbar from './More_Detail/more_detail/components/shared/Navbar'
 
 function Copyright(props) {
   return (
@@ -284,14 +285,20 @@ export default function SignUp() {
   else{
   return (
     <ThemeProvider theme={theme}>
-      <Container component="main" maxWidth="xs">
+      <Navbar data="User Sign-up" />
+      <Container component="main" style={{width:'45%'}}>
         <CssBaseline />
         <Box
           sx={{
-            marginTop: 8,
+            marginTop: 10,
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
+            padding:'2em 2em 1em 2em',
+            borderStyle:'ridge',
+            borderRadius:'1em',
+            boxShadow:'1em 1em 3em grey',
+            backgroundColor:'#F5F5F5'
           }}
         >
           <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
@@ -394,7 +401,7 @@ export default function SignUp() {
 
               {/* Otp Verified */}
               <Grid item xs={4} className="hide_grid" id="verifed">
-              <Button variant="outlined" color="success" style={{height:'3em',marginTop:'6%'}} disabled>
+              <Button variant="outlined" color="success" style={{height:'3em',marginTop:'6%'}} disabled={true}>
                 Verified
               </Button>
               </Grid>

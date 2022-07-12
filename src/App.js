@@ -7,21 +7,26 @@ import Signin from './Sign_in'
 import Signup from './Sign_up'
 import Profile from './Profile'
 import Members from './Members'
-// import DB from "./Firebase";
+import UserDetails from './UserDetails';
+import NotFoundPage from './More_Detail/more_detail/pages/not-found';
+
 function App() {
   return (
-    <BrowserRouter>
     <div className="app">
+      <BrowserRouter>
       <Route exact path="/" component={Sidebar}/>
       <Route exact path="/" component={Feed}/>
+    <Switch>
       <Route exact path="/" component={Widget}/>
       <Route exact path="/sign_in" component={Signin}/>
       <Route exact path="/signup" component={Signup}/>
       <Route exact path="/profile" component={Profile}/>
       <Route exact path="/members" component={Members}/>
-    </div>
-    
+      <Route exact path="/userDetail/:email" component={UserDetails}/>
+      <Route path="*" component={NotFoundPage} />
+    </Switch>
     </BrowserRouter>
+    </div>
   );
 }
 

@@ -1,3 +1,9 @@
+.leftGrid {
+    background-color: #314478 !important;
+    padding: 1em 0em !important;
+    border-radius: 1.22em !important;
+}
+
 .Profile_Photo {
     margin-left: auto !important;
     margin-right: auto !important;
@@ -30,6 +36,8 @@
 .comments {
     height: 36em;
     overflow-y: scroll;
+    background-color: #163057;
+    padding: 0em 0.8em 0.8em 0.8em;
 }
 
 .comments::-webkit-scrollbar {

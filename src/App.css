@@ -1,14 +1,18 @@
 body {
     --twitter-image: rgb(57, 68, 223);
-    --twitter-background: rgba(244, 245, 248, 0.87);
-    --twitter-tweet: #7DEDFF;
+    --twitter-background: #161733;
+    --twitter-tweet: #0A1342;
+    /* background-color: #F4EEAE !important; */
+    /* background-image: url('./public/photo-1.jpg'); */
+    /* background-repeat: no-repeat; */
+    /* background-size: 100%; */
     /* we make global variable*/
 }
 
 .app {
     display: flex;
     height: 100vh;
-    max-width: 75.25em;
+    max-width: 85em;
     margin-left: auto;
     margin-right: auto;
 }

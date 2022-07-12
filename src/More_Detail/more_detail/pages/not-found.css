@@ -1,0 +1,38 @@
+.loadingg {
+    font-weight: bold;
+    display: inline-block;
+    font-family: monospace;
+    font-size: 23px;
+    clip-path: inset(0 80ch 0 0);
+    animation: l 5s steps(50) infinite;
+}
+
+@keyframes l {
+    to {
+        clip-path: inset(0 -10ch 0 0)
+    }
+}
+
+.back {
+    animation: color-change 6s infinite;
+    text-decoration: none !important;
+    font-size: 20px !important;
+}
+
+@keyframes color-change {
+    0% {
+        color: red;
+    }
+    25% {
+        color: blue;
+    }
+    50% {
+        color: orangered;
+    }
+    75% {
+        color: green;
+    }
+    100% {
+        color: red;
+    }
+}

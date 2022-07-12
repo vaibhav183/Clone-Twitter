@@ -37,7 +37,7 @@ const ResponsiveAppBar = (props) => {
   };
 
   return (
-    <AppBar position="static" style={{width:"150%",marginLeft:"-25%",backgroundColor:"#00aaf2",marginBottom:"1em"}}>
+    <AppBar position="static" style={{width:"150%",marginLeft:"-25%",marginTop:'-0.5em',backgroundColor:"#0A1342",marginBottom:"1em"}}>
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           <Typography
@@ -71,7 +71,7 @@ const ResponsiveAppBar = (props) => {
                     </Button>
               </Link>
             ))}
-            <h1 style={{textAlign:'center',alignItems:"center",flexGrow: 1,color:"#1e00ff"}}>SUGGESTIONS TO FOLLOW</h1>
+            <h1 style={{textAlign:'center',alignItems:"center",flexGrow: 1,color:"white"}}>SUGGESTIONS TO FOLLOW</h1>
           </Box>
           <Box sx={{ flexGrow: 0 }}>
             <Tooltip title="Open settings">

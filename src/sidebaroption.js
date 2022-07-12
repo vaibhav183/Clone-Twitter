@@ -62,7 +62,7 @@ function Sidebaroption({text,Icon,rou_val}) {
     if(rou_val=='signout'){
        return(
             <div className="sidebaroption">
-                <Icon/>
+                <Icon className="icon" />
                 <h2 className="link" onClick={handleOpen}>{text}</h2>
                 <Dialog
                     fullScreen={fullScreen}
@@ -107,7 +107,7 @@ function Sidebaroption({text,Icon,rou_val}) {
     else{
         return (
             <div className="sidebaroption">
-                <Icon/>
+                <Icon className="icon" />
                 <h2><Link className="link" to={rou_val}>{text}</Link></h2>
             </div>
         );

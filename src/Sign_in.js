@@ -35,6 +35,7 @@ import validator from 'validator'
 import {firname,lasname,blank,otpBlank,passblank,notMatch,otpCheck,detail_wrong,notStrong,strong,muchStrong,wrong,check,error_occur,already,verify,verifyOtp,success} from "./error";
 import {useSelector,useDispatch} from "react-redux"
 import {setNull,setTokenNumber,setTokenNumber1} from "./actions/index";
+import Navbar from './More_Detail/more_detail/components/shared/Navbar'
 
 const theme = createTheme();
 
@@ -229,14 +230,20 @@ export default function SignIn() {
   else{
   return (
     <ThemeProvider theme={theme}>
-      <Container component="main" maxWidth="xs">
+      <Navbar data="User Sign-in" />
+      <Container component="main" style={{width:'40em'}}>
         <CssBaseline />
         <Box
           sx={{
-            marginTop: 8,
+            marginTop: 14,
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
+            padding:'2em',
+            borderStyle:'ridge',
+            borderRadius:'1em',
+            boxShadow:'1em 1em 3em grey',
+            backgroundColor:'#F5F5F5'
           }}
         >
           <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>

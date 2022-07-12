@@ -5,29 +5,37 @@
 }
 
 .sidebaroption:hover {
-    background-color: rgb(191, 221, 240);
-    color: var(--twitter-image);
+    background-color: white;
     /*here we use global variable --twitter-image*/
     transition: color 100ms ease-out;
     /* It activate on color after 100ms*/
-    border-radius: 4em;
+    border-radius: 3em;
 }
 
-.sidebaroption>.MuiSvgIcon-root {
-    /*It will select only icons of sidebar*/
-    padding: 0.7em;
+.sidebaroption:hover .icon {
+    color: #0A1342;
+}
+
+.sidebaroption:hover .link {
+    color: #0A1342;
+}
+
+.icon {
+    color: #FFFFF0;
+    margin-right: 0.4em;
+    margin-left: .1em;
 }
 
 h2 {
     /*It will select only h2 elements of sidebar*/
-    font-size: 1.22em;
+    font-size: 1.4em;
     font-weight: 800;
     margin-right: 1.22em;
 }
 
 .link {
     text-decoration: none;
-    color: #631594;
+    color: #FFDEAD;
 }
 
 .link:active {

@@ -2,7 +2,9 @@
     display: flex;
     /* align-items: flex-start; */
     flex-direction: column;
-    border-bottom: 1.5px solid var(--twitter-background);
+    border-bottom: 1.5px var(--twitter-background);
+    border-radius: 0.6em;
+    background-color: #364179;
     margin: 10px;
     padding-bottom: 0.6em;
     flex: 1;
@@ -10,7 +12,8 @@
 
 .post_headertext {
     display: flex;
-    align-items: center !important;
+    color: aliceblue;
+    /* align-items: center !important; */
 }
 
 .post_avatar {
@@ -20,7 +23,7 @@
 #post_badge {
     font-weight: 600;
     font-size: 1em;
-    color: gray;
+    color: wheat;
 }
 
 #post_headerSpecial {
@@ -45,4 +48,5 @@ img {
     margin-left: auto;
     margin-right: auto;
     margin-top: 0.8em;
+    margin-bottom: 0.4em;
 }

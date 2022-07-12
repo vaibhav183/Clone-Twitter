@@ -1,7 +1,7 @@
 .feed {
     border-right: 2px solid var(--twitter-background);
     /* min-width: fit-content; */
-    width: 50%;
+    width: 60%;
     overflow-y: scroll;
     /* When overflow happens then only scroll up applid*/
 }
@@ -31,13 +31,19 @@
 .feed_header {
     position: sticky;
     top: 0;
-    background-color: white;
     z-index: 50;
     border-bottom: 1px solid var(--twitter-background);
     text-align: center;
 }
 
 .form {
+    margin-top: 0.6em;
+    background-color: #415A9E;
+    padding: 0.5em 0.5em 0.3em 0.5em;
+    width: 96%;
+    border-radius: 0.8em;
+    margin-left: auto !important;
+    margin-right: auto !important;
     display: flex;
     flex-direction: column;
     border-bottom: 5px solid var(--twitter-background) !important;
@@ -53,6 +59,9 @@ textarea {
     flex: 1;
     margin-left: 1em;
     border: none;
+    background-color: #FFFAF0;
+    border-top-right-radius: 0.6em;
+    border-bottom-right-radius: 0.6em;
     overflow-y: scroll;
     font-family: 'Bonheur Royale', cursive;
     font-weight: 400;
@@ -80,8 +89,9 @@ textarea:focus {
 }
 
 .submit {
-    width: 30%;
+    width: 20%;
     height: 3em !important;
+    margin-top: 0.3em !important;
     margin-bottom: 1px !important;
     background-color: var(--twitter-tweet) !important;
     outline: none !important;
@@ -93,12 +103,15 @@ textarea:focus {
 }
 
 .posting_data {
+    margin-top: 0.2em;
     display: flex;
     align-items: center;
 }
 
 .upload {
-    border-radius: 4em;
+    color: whitesmoke !important;
+    background-color: var(--twitter-tweet) !important;
+    border-radius: 1em;
     font-weight: 600 !important;
     outline: none !important;
     margin-left: auto !important;
@@ -106,6 +119,9 @@ textarea:focus {
 
 .input_url {
     border: none;
+    background-color: #F8F8FF;
+    border-top-right-radius: 0.6em;
+    border-bottom-right-radius: 0.6em;
     width: 60%;
     padding: 0.7em;
 }
@@ -119,8 +135,12 @@ textarea:focus {
     align-items: center;
 }
 
+.loading {
+    padding: 1em;
+}
+
 .Error_sign {
-    color: red;
+    color: rgb(111, 1, 1);
     font-family: 'Koh Santepheap', cursive;
     font-weight: 600;
     width: 50%;

@@ -33,22 +33,6 @@ export default function Twitter_member(){
     const [search,setSearch]=useState(true)
     const [arr,setArr]=useState([])
 
-    //Fetching data
-  useEffect(() => {
-    Axios.post("https://clone-twitter-by-vaibhav.herokuapp.com/fetching_data_user",{token:myState,token1:myState1})
-    .then((response)=>{
-        if(response.data.msg=='success'){
-            dispatch(filling(response.data))
-        }
-        else{
-            dispatch(setNull())
-        }
-    })
-    .catch((err)=>{
-        console.log(err)
-    })
-    },[]);
-
     //Fetching total user
   useEffect(() => {
     Axios.post("https://clone-twitter-by-vaibhav.herokuapp.com/fetch_total_user",{email:myState1,token:myState})
@@ -64,7 +48,7 @@ export default function Twitter_member(){
     .catch((err)=>{
         console.log(err)
     })
-    },[user_data]);
+    },[]);
 
     //Profile Photo short Name
     function stringToColor(string) {
@@ -122,32 +106,32 @@ export default function Twitter_member(){
     }
     else{
     return ( 
-        <List sx={{marginLeft:'auto',marginRight:'auto',width:"50%", bgcolor: 'background.paper' }}>
+        <List sx={{marginLeft:'auto',marginRight:'auto',minWidth:"50%", bgcolor: '#163057',padding:'0em 0.8em 0.8em 0.8em' }}>
                     {user_data && <ResponsiveAppBar image={user_data.imgurl} name={user_data.name} />}
                      {suggest && user_data && (suggest).map((item)=>(
-                        <ListItem alignItems="center" style={{backgroundImage:'linear-gradient(315deg, #FF8008 0%, #FFC837 74%)',borderRadius:'0.4em',marginBottom:'0.8em'}}>
+                        <ListItem alignItems="center" style={{backgroundImage:'linear-gradient(to bottom right, #336699 7%, #6699ff 79%)',borderRadius:'0.4em',marginBottom:'0.8em'}}>
                           <ListItemAvatar>
-                            <Avatar {...stringAvatar(item.Name)} src={item.imgurl} />
+                            <Avatar {...stringAvatar(item.Name)} src={item.image} />
                           </ListItemAvatar>
                           <ListItemText
-                            primary={<b>{item.Name}{item.verified && <VerifiedIcon id="post_headerSpecial" />}</b>}
+                            primary={<Link to={`userDetail/${item.Email}`}><b style={{color:"#F8F8FF"}}>{item.Name}{item.verified && <VerifiedIcon id="post_headerSpecial" />}</b></Link>}
                             secondary={
                               <React.Fragment>
                                 <Typography
-                                  sx={{ display: 'block' }}
+                                  sx={{ display: 'block' ,color:'#F5F5DC'}}
                                   component="span"
                                   variant="body2"
                                   color="text.primary"
                                 >
                                   {item.username || "unknown"}<br/>
-                                  <strong style={{color:'white'}}>{`Followers: `}</strong> {item.followers>0?item.followers:0}<br/> 
-                                  <strong>{`Following: `}</strong> {item.following>0?item.following:0}
+                                  <strong style={{color:'#FFE4E1'}}>{`Followers: `}</strong> {item.followers>0?item.followers:0}<br/> 
+                                  <strong style={{color:'#FFE4E1'}}>{`Following: `}</strong> {item.following>0?item.following:0}
                                 </Typography>
                                 
                               </React.Fragment>
                             }
                           />
-                          <Button variant="contained" style={{float:'right',marginRight:'-4em'}} className={item.Email.split('@')[0]} id={item.Email} onClick={followed}>Follow</Button>
+                          <Button variant="contained" style={{float:'right',marginRight:'-4em',backgroundColor:'#0A1342'}} className={item.Email.split('@')[0]} id={item.Email} onClick={followed}>Follow</Button>
                           <LoadingButton
                             endIcon={<SaveIcon />}
                             loadingPosition="end"

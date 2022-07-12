@@ -35,6 +35,7 @@ import { user_error,name_error } from './error';
 import CreateIcon from '@mui/icons-material/Create';
 import {filling,clear, setNull,follower_change,following_change} from "./actions/index";
 import axios from 'axios'
+import Navbar from './More_Detail/more_detail/components/shared/Navbar'
 
 const Item = styled(Paper)(({ theme }) => ({
   ...theme.typography.body2,
@@ -60,18 +61,18 @@ const useStyles = makeStyles({
   root: {
     background: (props) =>
       props.color === 'red'
-        ? 'linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)'
+        ? 'radial-gradient(circle, #161a4b, #13174a, #111348, #0e0f47, #0c0b45)'
         : props.color === 'blue'
-            ? 'linear-gradient(45deg, #2196F3 30%, #21CBF3 90%)'
+            ? 'radial-gradient(circle, #3d2c79, #3b2c7e, #382c82, #352c87, #312c8c)'
             :  props.color === 'violet'
-                ? 'linear-gradient(315deg, #03e5b7 0%, #037ade 74%)'
-                :  'linear-gradient(315deg, #ee9617 0%, #fe5858 74%)',
+                ? 'radial-gradient(circle, #3d2c79, #3b2c7e, #382c82, #352c87, #312c8c)'
+                :  'radial-gradient(circle, #161a4b, #13174a, #111348, #0e0f47, #0c0b45)',
     border: 0,
     borderRadius: 3,
     boxShadow: (props) =>
       props.color === 'red'
-        ? '0 3px 5px 2px rgba(255, 105, 135, .3)'
-        : '0 3px 5px 2px rgba(33, 203, 243, .3)',
+        ? '0 3px 5px 2px #172038'
+        : '0 3px 5px 2px #172038',
     color: 'white',
     height: '3em',
     width: '16em',
@@ -143,9 +144,7 @@ export default function SimpleContainer() {
 
   //Photo Upload
   function upload(value){
-    // console.log(value.target.files[0].size)
     if(((value.target.files[0].type)=="image/png" || (value.target.files[0].type)=="image/jpeg") && (value.target.files[0].size)>0){
-      console.log(value.target)
       setPhoto_upload(value.target.files[0].name)
     }
     else{
@@ -165,7 +164,7 @@ export default function SimpleContainer() {
         }
     })
     .catch((err)=>{
-        console.log(err)
+        alert("Something went wrong! Please try again later")
     })
     },[blockChange,myState1,myState]);
 
@@ -223,7 +222,6 @@ export default function SimpleContainer() {
 
   // Block User
   const block=(e)=>{
-    console.log(e.target.id.split('*')[0],e.target.id.split('*')[1])
     axios.post('https://clone-twitter-by-vaibhav.herokuapp.com/block_user',{email:user_data.email,user_email:e.target.id.split('*')[1],block_status:(e.target.id.split('*')[0]=="true"?true:false)})
     .then((res)=>{
       if(res.data.msg=='success'){
@@ -283,11 +281,11 @@ export default function SimpleContainer() {
       .then((res)=>{
         if(res.data.msg=='success'){
           if((event.target[0].files[0]!=undefined) && ((event.target[0].files[0].type)=="image/jpeg" || (event.target[0].files[0].type)=="image/png") && (event.target[0].files[0].size)>0){
-             const formData = new FormData()
-             formData.append('file', event.target[14].files[0])
+            const formData = new FormData()
+             formData.append('file', event.target[0].files[0])
              formData.append('upload_preset','postimage' )
              Axios.post("https://api.cloudinary.com/v1_1/vaibhav183vibhu/image/upload",formData)
-             .then(async function (response){
+             .then((response)=>{
               Axios.post("https://clone-twitter-by-vaibhav.herokuapp.com/profile_update",{email:myState1,token:myState,name:$('#name').val(),username:$('#username').val(),img:response.data.secure_url})
               .then((response)=>{
                 if (response.data.msg === 'success'){
@@ -320,7 +318,7 @@ export default function SimpleContainer() {
               })
              })
              .catch((error)=>{
-               alert("Ooh!! something went wrong")
+               alert("Ooh!! some error occured. Please try again later")
                $('#updating_but').addClass("hide_grid");
                   $('#update_but').removeClass("hide_grid");
              })
@@ -328,7 +326,6 @@ export default function SimpleContainer() {
             else{
               Axios.post("https://clone-twitter-by-vaibhav.herokuapp.com/profile_update",{email:myState1,token:myState,name:($('#name').val()),username:$('#username').val(),img:user_data.imgurl})
               .then((response)=>{
-                console.log(response.data.msg)
                 if (response.data.msg === 'success'){
                   Axios.post("https://clone-twitter-by-vaibhav.herokuapp.com/fetching_data_user",{token:myState,token1:myState1})
                   .then((response)=>{
@@ -372,7 +369,7 @@ export default function SimpleContainer() {
         }
       })
       .catch((err)=>{
-        alert("Ooh!! Something went wrong")
+        alert("Ooh!! Server Error...")
                 $('#updating_but').addClass("hide_grid");
                     $('#update_but').removeClass("hide_grid");
       })
@@ -382,20 +379,21 @@ export default function SimpleContainer() {
   const cancelAlert=()=>{
     setUpdated(false);
   }
-
+  
   if(myState!=null && myState1!=null){
   return (
       <Container maxWidth="lg" style={{marginTop:'1em'}}>
+        <Navbar data="Profile Section" />
         {updated && <Alert className="animate__animated animate__fadeInDown" severity="success" style={{position:'absolute',zIndex:10,marginLeft:'35%',width:"30%"}}>
         <AlertTitle style={{width:"190%"}}>Update Successfully<CancelIcon style={{float:'right',cursor:"pointer"}} onClick={cancelAlert} /></AlertTitle>
         Your Profile has been <strong>updated</strong>
       </Alert>}
-      <Grid container spacing={4}>
+      <Grid container spacing={4} style={{marginTop:"5%"}}>
         <Grid item xs={8} sm={4}>
-          <Item>
+          <Item className="leftGrid">
               {user_data.name!="" && <Avatar {...stringAvatar(user_data.name)} className="Profile_Photo" src={user_data.imgurl} />}
-              <h1>{user_data.name}</h1>
-              <h3 style={{color:'gray',marginTop:'-1em'}}>{user_data.username}{" "}{user_data.verified && <VerifiedIcon id="post_headerSpecial" />}</h3>
+              <h1 style={{color:"#F0F8FF"}}>{user_data.name}</h1>
+              <h3 style={{color:'#FFE4E1',marginTop:'-1em'}}>{user_data.username}{" "}{user_data.verified && <VerifiedIcon id="post_headerSpecial" />}</h3>
               <div>
               <Badge className="follower" badgeContent={user_data.followers.length} color="warning">
               <MyButton color="red" id="follower" onClick={(e)=>handleClick(e)}>Follower</MyButton>
@@ -415,30 +413,32 @@ export default function SimpleContainer() {
               </div>
           </Item>
         </Grid>
-        <Grid item xs={12} sm={10} md={8} style={{marginTop:'-0.5em',marginLeft:'auto',marginRight:'auto'}} >
+        <Grid item xs={12} sm={10} md={8} style={{marginLeft:'auto',marginRight:'auto'}} >
 
 
           {/* Follower Section */}
-         {bfollower && <List sx={{marginLeft:'auto',marginRight:'auto', width: '80%', bgcolor: 'background.paper' }}>
-         <h1 style={{textAlign:'center',marginTop:'0em'}}>Folllowers</h1>
+         {bfollower && <List sx={{marginLeft:'auto',marginRight:'auto', width: '80%',borderRadius:'1em' ,backgroundColor:"#163057",padding:"0em 0.8em 0.8em 0.8em"}}>
+         <h1 style={{textAlign:'center',marginTop:'0em',color:"whitesmoke"}}>Folllowers</h1>
+         <hr style={{color:'white'}} />
+         {user_data.followers.length==0 && <h2 style={{textAlign:'center',color:'#FAF0E6'}}>Oops! No followers yet...</h2>}
          {(user_data.followers).map((item)=>(
-            <ListItem alignItems="center" style={{backgroundImage:'linear-gradient(315deg, #FF8008 0%, #FFC837 74%)',borderRadius:'0.4em',marginBottom:'0.8em'}}>
+            <ListItem alignItems="center" style={{backgroundColor:"#0892D0",borderRadius:'0.6em',marginBottom:'0.8em'}}>
               <ListItemAvatar>
                 <Avatar {...stringAvatar(item.name)} src={item.imgurl} />
               </ListItemAvatar>
               <ListItemText
-                primary={<b>{item.name}{item.verified && <VerifiedIcon id="post_headerSpecial" />}</b>}
+                primary={<Link to={`userDetail/${item.email}`}><b style={{color:"#F8F8FF"}}>{item.name}{item.verified && <VerifiedIcon id="post_headerSpecial" />}</b></Link>}
                 secondary={
                   <React.Fragment>
                     <Typography
-                      sx={{ display: 'block' }}
+                      sx={{ display: 'block',color:'#F5F5DC' }}
                       component="span"
                       variant="body2"
                       color="text.primary"
                     >
                       {item.username}<br/>
-                      <strong style={{color:'white'}}>{`Followers: `}</strong> {item.followers>0?item.followers:0}<br/> 
-                      <strong>{`Following: `}</strong> {item.following>0?item.following:0}
+                      <strong style={{color:'#FFE4E1'}}>{`Followers: `}</strong> {item.followers>0?item.followers:0}<br/> 
+                      <strong style={{color:'#FFE4E1'}}>{`Following: `}</strong> {item.following>0?item.following:0}
                     </Typography>
                     
                   </React.Fragment>
@@ -469,26 +469,28 @@ export default function SimpleContainer() {
             </List>}
 
           {/* Following Section */}
-          {bfollowing && <List sx={{marginLeft:'auto',marginRight:'auto', width: '80%', bgcolor: 'background.paper' }}>
-            <h1 style={{textAlign:'center',marginTop:'0em'}}>Folllowing</h1>
+          {bfollowing && <List sx={{marginLeft:'auto',marginRight:'auto', width: '80%', borderRadius:'1em' ,backgroundColor:"#163057",padding:"0em 0.8em 0.8em 0.8em" }}>
+            <h1 style={{textAlign:'center',marginTop:'0em',color:"whitesmoke"}}>Folllowing</h1>
+            <hr style={{color:'white'}} />
+            {user_data.following.length==0 && <h2 style={{textAlign:'center',color:'#FAF0E6'}}>You haven't followed anyone...</h2>}
             {(user_data.following).map((item)=>(
-                <ListItem alignItems="center" style={{backgroundImage:'linear-gradient(315deg, #A6FFCB 0%, #12D8FA 74%)',borderRadius:'0.4em',marginBottom:'0.8em'}}>
+                <ListItem alignItems="center" style={{backgroundColor:"#0892D0",borderRadius:'0.6em',marginBottom:'0.8em'}}>
                   <ListItemAvatar>
                     <Avatar {...stringAvatar(item.name)} src={item.imgurl} />
                   </ListItemAvatar>
                   <ListItemText
-                    primary={<b>{item.name}{item.verified && <VerifiedIcon id="post_headerSpecial" />}</b>}
+                    primary={<Link to={`userDetail/${item.email}`}><b style={{color:"#F8F8FF"}}>{item.name}{item.verified && <VerifiedIcon id="post_headerSpecial" />}</b></Link>}
                     secondary={
                       <React.Fragment>
                         <Typography
-                          sx={{ display: 'block' }}
+                          sx={{ display: 'block' ,color:'#F5F5DC'}}
                           component="span"
                           variant="body2"
                           color="text.primary"
                         >
                           {item.username}<br/>
-                          <strong style={{color:'white'}}>{`Followers: `}</strong> {item.followers>0?item.followers:0}<br/> 
-                          <strong>{`Following: `}</strong> {item.following>0?item.following:0}
+                          <strong style={{color:'#FFE4E1'}}>{`Followers: `}</strong> {item.followers>0?item.followers:0}<br/> 
+                          <strong style={{color:'#FFE4E1'}}>{`Following: `}</strong> {item.following>0?item.following:0}
                         </Typography>
                         
                       </React.Fragment>
@@ -519,21 +521,23 @@ export default function SimpleContainer() {
 
           {/* Post Data */}
           {bposts && <div className="comments">
-              <h1 style={{textAlign:'center',marginTop:'0em'}}>All Posts</h1>
+              <h1 style={{textAlign:'center',marginTop:'0em',color:"whitesmoke"}}>All Posts</h1>
+              <hr style={{color:'white'}} />
+              {user_data.posts.length==0 && <h2 style={{textAlign:'center',color:'#FAF0E6'}}>No posts...</h2>}
               {(user_data.posts).map((item)=>(
-                  <Paper sx={{ padding: "2em",marginBottom:'1em'}} style={{backgroundImage:'linear-gradient(135deg,#f7797d 0%,#FBD786 40%)',borderRadius:'0.4em'}} elevation={2}>
+                  <Paper sx={{ padding: "2em",marginBottom:'1em'}} style={{backgroundColor:'#0892D0',borderRadius:'0.4em'}} elevation={2}>
                     <Grid container wrap="nowrap" spacing={2}>
                       <Grid justifyContent="left" item xs={12} zeroMinWidth>
-                        <h4 style={{ margin: 0, textAlign: "left" }}>{item.name}<span id="post_badge" style={{color:'#210070'}}>&ensp;&ensp;&ensp;{item.date.slice(0,10)}</span></h4>
+                        <h4 style={{ margin: 0, textAlign: "left",color:"#F8F8FF" }}>{item.name}<span id="post_badge" style={{color:'#F5F5DC'}}>&ensp;&ensp;&ensp;{item.date.slice(0,10)}</span></h4>
                         {/* <p style={{ textAlign: "left", color: "white",marginTop:'0px' }}>
                           {(item.time).slice(0,10)}
                         </p> */}
-                        <pre style={{ border: 'initial',whiteSpace:'pre-wrap',padding: 'initial',color:'#d72631',fontFamily:'sans-serif',fontSize:'inherit' }}>
+                        <pre style={{ border: 'initial',whiteSpace:'pre-wrap',padding: 'initial',color:'#FDF5E6',fontFamily:'sans-serif',fontSize:'inherit' }}>
                           {item.text}
                         </pre>
                         <Grid style={{display:'flex',alignItems: 'flex-start',columnGap:'1em'}}>
-                        {item.post_data==""?"":<img sm={5} style={{marginBottom:'1em',height:'22em',maxWidth:'60%'}} src={item.post_data} />}
-                        {item.post_url==""?"":<img sm={5} style={{marginBottom:'1em',height:'22em',maxWidth:'60%'}} src={item.post_url} />}
+                        {item.post_data==""?"":<img sm={5} style={{marginTop:'1em',height:'22em',maxWidth:'60%'}} src={item.post_data} />}
+                        {item.post_url==""?"":<img sm={5} style={{marginTop:'1em',height:'22em',maxWidth:'60%'}} src={item.post_url} />}
                         </Grid>
                         {/* <Grid justifyContent="left" item xs={12} zeroMinWidth>
                           <h4>Me:</h4>
@@ -547,25 +551,28 @@ export default function SimpleContainer() {
 
           {/* Comment Section */}
             {bcomments && <div className="comments">
-              <h1 style={{textAlign:'center',marginTop:'0em'}}>Comments</h1>
-              {(user_data.comments).map((item)=>(
-                  <Paper sx={{ padding: "2em",marginBottom:'1em'}} style={{backgroundImage:'linear-gradient(315deg, #ff5f6d 0%, #ffc371 74%)',borderRadius:'0.4em'}} elevation={2}>
+              <h1 style={{textAlign:'center',marginTop:'0em',color:"whitesmoke"}}>Comments</h1>
+              <hr style={{color:'white'}} />
+              {user_data.comments.length==0 && <h2 style={{textAlign:'center',color:'#FAF0E6'}}>Haven't commented on anyone...</h2>}
+              {(user_data.comments).map((item,index)=>(
+                  <Paper key={index} sx={{ padding: "2em",marginBottom:'1em'}} style={{backgroundColor:'#0892D0',borderRadius:'0.4em'}} elevation={2}>
                     <Grid container wrap="nowrap" spacing={2}>
                       <Grid item>
                         <Avatar {...stringAvatar(item.name)} src={item.imgurl} />
                       </Grid>
                       <Grid justifyContent="left" item xs={12} zeroMinWidth>
-                        <h4 style={{ margin: 0, textAlign: "left" }}>{item.name}<span id="post_badge" style={{color:'#210070'}}>&ensp;&ensp;&ensp;@{item.username}{" "}{item.verified && <VerifiedIcon id="post_headerSpecial" />}</span></h4>
-                        <p style={{ textAlign: "left", color: "white",marginTop:'0px' }}>
+                        <h4 style={{ margin: 0, textAlign: "left",color:"#F8F8FF"}}>{item.name}<span id="post_badge" style={{color:'#F5F5DC'}}>&ensp;&ensp;&ensp;@{item.username}{" "}{item.verified && <VerifiedIcon id="post_headerSpecial" />}</span></h4>
+                        <p style={{ textAlign: "left", color: "#FFDEAD",marginTop:'0px' }}>
                           {(item.time).slice(0,10)}
                         </p>
-                        <pre style={{ textAlign: "left",color:'#d72631',fontFamily:'sans-serif',fontSize:'1em',whiteSpace:'pre-wrap'}}>
-                          {item.post_data}
-                        </pre>
-                        <img alt={item.post_url} src={item.post_url} />
+                        {item.text!="" && <pre style={{ textAlign: "left",color:'#FFFFF0',fontFamily:'sans-serif',fontSize:'1em',whiteSpace:'pre-wrap'}}>
+                          {item.text}
+                        </pre>}
+                        {item.post_data!="" && <img alt={item.post_data} src={item.post_data} />}
+                        {item.post_url!="" && <img alt={item.post_url} src={item.post_url} />}
                         <Grid justifyContent="left" item xs={12} zeroMinWidth>
                           <h4>Me:</h4>
-                          <pre style={{fontFamily:'sans-serif', fontSize:'1em',whiteSpace:'pre-wrap',marginLeft:'1em',marginTop:'-0.4em'}}>{item.my_comment}</pre>
+                          <pre style={{fontFamily:'sans-serif', fontSize:'1em',whiteSpace:'pre-wrap',marginLeft:'1em',marginTop:'-0.4em',color:'#FFE4E1'}}>{item.my_comment}</pre>
                       </Grid>
                       </Grid>
                     </Grid>
@@ -575,13 +582,13 @@ export default function SimpleContainer() {
 
             {/* Update Profile */ }
             {update && <div className="comments">
-            <h1 style={{textAlign:'center',marginTop:'0em'}}>Update Profile</h1>
-                  <Box component="form" noValidate onSubmit={submitForm}  sx={{ mt: 3, marginLeft:'auto',marginRight:'auto',backgroundImage:'linear-gradient(315deg, #EDE574 0%, #E1F5C4 74%)'}}>
+            <h1 style={{textAlign:'center',marginTop:'0em',color:'whitesmoke'}}>Update Profile</h1>
+                  <Box component="form" noValidate onSubmit={submitForm}  sx={{ mt: 3,height:'80%', marginLeft:'10%',marginRight:'10%',borderRadius:'1em',backgroundColor:'#F0FFFF'}}>
                   <Badge
                     overlap="circular"
                     anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
                     badgeContent={
-                      <CreateIcon style={{color:'black'}} />
+                      <CreateIcon style={{color:'white'}} />
                     }
                     component="label"
                     style={{marginLeft:'40%',cursor:"pointer"}}

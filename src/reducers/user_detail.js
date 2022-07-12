@@ -1,3 +1,4 @@
+////////// Reducer /////////
 const intialState={
     name:"",
     username:"",
@@ -24,31 +25,9 @@ const changeUserData=(state=intialState,action)=>{
                 following: state.following.filter((item)=>item.email!=action.data)
             }
         case "clear":
-            return {
-                ...state,
-                name:"",
-                username:"",
-                email:"",
-                verified:false,
-                imgurl:"",
-                followers:[],
-                following:[],
-                posts:[],
-                comments:[]
-            };
+            return state;
         default :
-            return {
-                ...state,
-                name:"",
-                username:"",
-                email:"",
-                verified:false,
-                imgurl:"",
-                followers:[],
-                following:[],
-                posts:[],
-                comments:[]
-            };
+            return intialState;
     }
 }
 

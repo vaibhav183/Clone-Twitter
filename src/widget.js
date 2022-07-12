@@ -13,7 +13,7 @@ function Widgets() {
     <div className="widget">
       <div className="widgets__input">
         <SearchIcon className="widgets__searchIcon" />
-        <input placeholder="Search Twitter" type="text" />
+        <input placeholder="Search User" type="text" />
       </div>
 
       <div className="widgets__widgetContainer">
@@ -22,22 +22,23 @@ function Widgets() {
         <TwitterShareButton
         url={'https://facebook.com/profile.php?id=100034310406981'}
         options={{ text: '#reactjs is awesome', via: 'Vaibhav29885098' }}
+        className="share"
         />
 
         <TwitterTimelineEmbed
           sourceType="profile"
           screenName="TOIIndiaNews"
-          options={{height: 400}}
+          options={{height: 500}}
         />
 
           {/* for black theme use:- options={{theme: 'dark' }} */}
 
           {/* If we want to add any post on own website then go to that post and embed that post and use tweet id or url to post here */}
-        <TwitterTimelineEmbed
+        {/* <TwitterTimelineEmbed
         sourceType="profile"
         screenName="placementnitp"
-        options={{height: 400}}
-        />
+        options={{height: 350}}
+        /> */}
 
 
         <TwitterFollowButton
